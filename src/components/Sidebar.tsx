@@ -1,14 +1,12 @@
-import React from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const Sidebar = () => {
-  const navigate = useNavigate();
-  const username = localStorage.getItem("user") || "Guest";
+  const { logout } = useAuth();
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/login");
-  };
+  const location = useLocation();
+
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <div className="flex h-screen w-full flex-col justify-between bg-blue-300 px-5 py-6">
@@ -17,19 +15,19 @@ const Sidebar = () => {
         <div className="flex flex-col items-start gap-y-3">
           <Link
             to="/dashboard"
-            className="block w-full rounded-md px-2 py-1 hover:bg-blue-400"
+            className={`block w-full rounded-md px-2 py-1 hover:bg-blue-400 ${isActive("/dashboard") ? "bg-blue-400" : ""}`}
           >
             User
           </Link>
           <Link
             to="/dashboard/file"
-            className="block w-full rounded-md px-2 py-1 hover:bg-blue-400"
+            className={`block w-full rounded-md px-2 py-1 hover:bg-blue-400 ${isActive("/dashboard/file") ? "bg-blue-400" : ""}`}
           >
             File
           </Link>
           <Link
             to="/dashboard/tool"
-            className="block w-full rounded-md px-2 py-1 hover:bg-blue-400"
+            className={`block w-full rounded-md px-2 py-1 hover:bg-blue-400 ${isActive("/dashboard/tool") ? "bg-blue-400" : ""}`}
           >
             Tool
           </Link>
@@ -37,8 +35,8 @@ const Sidebar = () => {
       </div>
       <div>
         <button
-          className="flex w-full cursor-pointer flex-row items-center justify-center gap-x-2 rounded-md p-2 hover:bg-blue-500"
-          onClick={handleLogout}
+          className="flex w-full cursor-pointer flex-row items-center justify-center gap-x-2 rounded-md p-2 hover:bg-blue-400"
+          onClick={logout}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

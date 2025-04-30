@@ -1,13 +1,28 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const Login = () => {
-  const navigate = useNavigate();
-  const [username, setUsername] = useState("");
+  const { login } = useAuth();
 
-  const handleLogin = () => {
-    localStorage.setItem("user", username);
-    navigate("/dashboard");
+  const [input, setInput] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleSubmitEvent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (input.email !== "" && input.password !== "") {
+      return await login(input.email, input.password);
+    }
+    alert("please provide a valid input");
+  };
+
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setInput((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   return (
@@ -23,11 +38,13 @@ const Login = () => {
                 Email
               </label>
               <input
-                type="text"
-                id="first_name"
+                type="email"
+                id="email"
+                name="email"
                 className="block w-full rounded-lg border border-gray-300 bg-gray-100 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                 placeholder="abc@gmail.com"
                 required
+                onChange={handleInput}
               />
             </div>
             <div>
@@ -38,26 +55,31 @@ const Login = () => {
                 Password
               </label>
               <input
-                type="text"
-                id="first_name"
+                type="password"
+                id="password"
+                name="password"
                 className="block w-full rounded-lg border border-gray-300 bg-gray-100 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                 placeholder="password"
                 required
+                onChange={handleInput}
               />
             </div>
             <p className="text-right text-sm text-gray-400">Forgot password?</p>
-            <div className="flex w-full flex-row justify-end">
-              <Link
-                to="/dashboard"
-                className="me-2 mb-2 rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            <div className="relative flex w-full flex-row justify-end">
+              <button
+                onClick={handleSubmitEvent}
+                className="me-2 mb-2 cursor-pointer rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
               >
                 Login
-              </Link>
+              </button>
             </div>
           </div>
         </div>
       </div>
-      <div className="w-1/2 bg-blue-400"></div>
+      <div className="flex w-1/2 flex-col items-center justify-center bg-blue-400">
+        <p className="text-2xl font-bold">CATI</p>
+        <p className="text-xl">Chatbot Departemen Teknologi Informasi</p>
+      </div>
     </div>
   );
 };
