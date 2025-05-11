@@ -1,70 +1,42 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import type { FileItem } from "../../types/file";
-import { getFiles as fetchFiles } from "../../services/fileService";
-import FileModal from "../../components/modal/FileModal";
-import UpdateFileModal from "../../components/modal/UpdateFileModal";
+import { useState } from "react";
 import DeleteModal from "../../components/modal/DeleteModal";
+import type {
+  ConversationItem,
+  ListUniqueConversationItem,
+} from "../../types/conversation";
+import InfoConversationModal from "../../components/modal/InfoConversationModal";
 import Pagination from "../../components/pagination/Pagination";
 
-const DashboardFile = () => {
-  const files: FileItem[] = [
+const DashboardHistory = () => {
+  const items: ListUniqueConversationItem[] = [
     {
-      id: "55aab0e9-03bc-4c79-89a0-fcb613977c50",
-      file_name:
-        "55aab0e9-03bc-4c79-89a0-fcb613977c50_Daftar Dosen - Departemen Teknologi Informasi.pdf",
-      file_path: `F:\\project\\chatbot-ta\\chatbot-service\\data\\uploads\\55aab0e9-03bc-4c79-89a0-fcb613977c50_Daftar Dosen - Departemen Teknologi Informasi.pdf`,
-      status: "SUCCESS",
-      created_at: "2025-05-06 18:03:15.551948+00",
-      updated_at: "2025-05-06 18:03:30.603538+00",
-      user_id: "3434cf60-c944-4cb3-baa8-d66a5511e5cf",
-      meta: {
-        name: "Daftar Dosen - Departemen Teknologi Informasi.pdf",
-        content_type: "application/pdf",
-        size: 488280,
-        collection_name: "a",
-      },
+      sender: "whatsapp+62",
+      user_id: "a",
     },
   ];
 
-  const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [selectedUser, setSelectedUser] =
+    useState<ListUniqueConversationItem | null>(null);
 
-  const openEditModal = (file: FileItem) => {
-    setSelectedFile(file);
-    setShowEditModal(true);
+  const openInfoModal = (info: ListUniqueConversationItem) => {
+    setSelectedUser(info);
+    setShowInfoModal(true);
   };
 
-  const closeEditModal = () => {
-    setShowEditModal(false);
-    setSelectedFile(null);
+  const closeInfoModal = () => {
+    setShowInfoModal(false);
+    setSelectedUser(null);
   };
 
   const openDeleteModal = () => {
     setShowDeleteModal(!showDeleteModal);
   };
 
-  // const { accessToken } = useAuth();
-  // const [files, setFiles] = useState<FileItem[]>([]);
-
-  // useEffect(() => {
-  //   const getFiles = async () => {
-  //     if (!accessToken) return;
-  //     try {
-  //       const data = await fetchFiles(accessToken);
-  //       setFiles(data);
-  //     } catch (error) {
-  //       console.error("Failed to fetch files:", error);
-  //     }
-  //   };
-
-  //   getFiles();
-  // }, [accessToken]);
-
   return (
     <div className="flex w-full flex-col gap-y-3">
-      <h2 className="text-2xl font-semibold">Dashboard File</h2>
+      <h2 className="text-2xl font-semibold">Riwayat</h2>
 
       <div className="flex w-full flex-row justify-between">
         <label htmlFor="simple-search" className="sr-only">
@@ -102,17 +74,14 @@ const DashboardFile = () => {
             <span className="sr-only">Search</span>
           </button>
         </div>
-
-        <FileModal />
       </div>
 
       <DeleteModal id={"a"} onClick={openDeleteModal} value={showDeleteModal} />
 
-      {selectedFile && showEditModal && (
-        <UpdateFileModal
-          showModal={showEditModal}
-          file={selectedFile}
-          onClick={closeEditModal}
+      {selectedUser && showInfoModal && (
+        <InfoConversationModal
+          showModal={showInfoModal}
+          onClick={closeInfoModal}
         />
       )}
 
@@ -124,13 +93,7 @@ const DashboardFile = () => {
                 No.
               </th>
               <th scope="col" className="px-6 py-3">
-                Filename
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Status
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Kategori
+                Pengirim
               </th>
               <th scope="col" className="px-0.5 py-4">
                 <span className="sr-only">Edit</span>
@@ -141,7 +104,7 @@ const DashboardFile = () => {
             </tr>
           </thead>
           <tbody>
-            {files.map((file, index) => (
+            {items.map((item, index) => (
               <tr className="border-b border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
                 <th
                   scope="row"
@@ -149,14 +112,10 @@ const DashboardFile = () => {
                 >
                   {index + 1}
                 </th>
-                <td className="px-6 py-4 hover:cursor-pointer hover:underline">
-                  {file.meta.name}
-                </td>
-                <td className="px-6 py-4">{file.status}</td>
-                <td className="px-6 py-4">{file.meta.collection_name}</td>
+                <td className="px-6 py-4">{item.sender || item.user_id}</td>
                 <td
                   className="cursor-pointer px-0.5 py-4"
-                  onClick={() => openEditModal(file)}
+                  onClick={() => openInfoModal(item)}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -169,7 +128,7 @@ const DashboardFile = () => {
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
-                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                      d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
                     />
                   </svg>
                 </td>
@@ -203,4 +162,4 @@ const DashboardFile = () => {
   );
 };
 
-export default DashboardFile;
+export default DashboardHistory;

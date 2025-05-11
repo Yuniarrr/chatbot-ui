@@ -2,64 +2,103 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import type { UserItem } from "../../types/user";
 import { getUsers as fetchUsers } from "../../services/userService";
+import DeleteModal from "../../components/modal/DeleteModal";
+import UpdateUserModal from "../../components/modal/UpdateUserModal";
+import UserModal from "../../components/modal/UserModal";
 
 const DashboardUser = () => {
-  const { accessToken } = useAuth();
-  const [users, setUsers] = useState<UserItem[]>([]);
+  const users: UserItem[] = [
+    { id: "a", full_name: "a", email: "abc", role: "USER" },
+  ];
 
-  useEffect(() => {
-    const getUsers = async () => {
-      if (!accessToken) return;
-      try {
-        const data = await fetchUsers(accessToken);
-        setUsers(data);
-      } catch (error) {
-        console.error("Failed to fetch files:", error);
-      }
-    };
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
 
-    getUsers();
-  }, [accessToken]);
+  const openDeleteModal = () => {
+    setShowDeleteModal(!showDeleteModal);
+  };
+
+  const openEditModal = (user: UserItem) => {
+    setSelectedUser(user);
+    setShowEditModal(true);
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setSelectedUser(null);
+  };
+
+  // const { accessToken } = useAuth();
+  // const [users, setUsers] = useState<UserItem[]>([]);
+
+  // useEffect(() => {
+  //   const getUsers = async () => {
+  //     if (!accessToken) return;
+  //     try {
+  //       const data = await fetchUsers(accessToken);
+  //       setUsers(data);
+  //     } catch (error) {
+  //       console.error("Failed to fetch files:", error);
+  //     }
+  //   };
+
+  //   getUsers();
+  // }, [accessToken]);
 
   return (
     <div className="flex w-full flex-col gap-y-3">
-      <h2 className="text-2xl font-semibold">Dashboard User</h2>
+      <h2 className="text-2xl font-semibold">Dashboard Pengguna</h2>
 
-      <form className="flex max-w-sm self-end">
+      <div className="flex w-full flex-row justify-between">
         <label htmlFor="simple-search" className="sr-only">
           Search
         </label>
-        <div className="relative w-full">
-          <input
-            type="text"
-            id="simple-search"
-            className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-            placeholder="Search..."
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          className="ms-2 cursor-pointer rounded-lg border border-blue-700 bg-blue-700 p-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          <svg
-            className="h-4 w-4"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 20 20"
-          >
-            <path
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+        <div className="flex flex-row">
+          <div className="relative">
+            <input
+              type="text"
+              id="simple-search"
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-4 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+              placeholder="Search..."
+              required
             />
-          </svg>
-          <span className="sr-only">Search</span>
-        </button>
-      </form>
+          </div>
+          <button
+            type="submit"
+            className="ms-2 cursor-pointer rounded-lg border border-blue-700 bg-blue-700 p-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            <svg
+              className="h-4 w-4"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 20"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+              />
+            </svg>
+            <span className="sr-only">Search</span>
+          </button>
+        </div>
+
+        <UserModal />
+      </div>
+
+      <DeleteModal id={"a"} onClick={openDeleteModal} value={showDeleteModal} />
+
+      {selectedUser && showEditModal && (
+        <UpdateUserModal
+          showModal={showEditModal}
+          user={selectedUser}
+          onClick={closeEditModal}
+        />
+      )}
 
       <div className="relative w-full shadow-md sm:rounded-lg">
         <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
@@ -80,6 +119,9 @@ const DashboardUser = () => {
               <th scope="col" className="px-6 py-3">
                 <span className="sr-only">Edit</span>
               </th>
+              <th scope="col" className="px-6 py-3">
+                <span className="sr-only">Delete</span>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -94,13 +136,43 @@ const DashboardUser = () => {
                 <td className="px-6 py-4">{user.full_name}</td>
                 <td className="px-6 py-4">{user.email}</td>
                 <td className="px-6 py-4">{user.role}</td>
-                <td className="px-6 py-4 text-right">
-                  <a
-                    href="#"
-                    className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                <td
+                  className="cursor-pointer px-0.5 py-4"
+                  onClick={() => openEditModal(user)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    className="size-6"
                   >
-                    Edit
-                  </a>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                    />
+                  </svg>
+                </td>
+                <td
+                  className="cursor-pointer px-0.5 py-4"
+                  onClick={openDeleteModal}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                    />
+                  </svg>
                 </td>
               </tr>
             ))}

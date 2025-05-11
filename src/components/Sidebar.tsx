@@ -17,7 +17,13 @@ const Sidebar = () => {
             to="/dashboard"
             className={`block w-full rounded-md px-2 py-1 hover:bg-blue-400 ${isActive("/dashboard") ? "bg-blue-400" : ""}`}
           >
-            User
+            Pengguna
+          </Link>
+          <Link
+            to="/dashboard/koleksi"
+            className={`block w-full rounded-md px-2 py-1 hover:bg-blue-400 ${isActive("/dashboard/koleksi") ? "bg-blue-400" : ""}`}
+          >
+            Koleksi
           </Link>
           <Link
             to="/dashboard/file"
@@ -25,11 +31,23 @@ const Sidebar = () => {
           >
             File
           </Link>
-          <Link
+          {/* <Link
             to="/dashboard/tool"
             className={`block w-full rounded-md px-2 py-1 hover:bg-blue-400 ${isActive("/dashboard/tool") ? "bg-blue-400" : ""}`}
           >
             Tool
+          </Link> */}
+          <Link
+            to="/dashboard/program"
+            className={`block w-full rounded-md px-2 py-1 hover:bg-blue-400 ${isActive("/dashboard/program") ? "bg-blue-400" : ""}`}
+          >
+            Program
+          </Link>
+          <Link
+            to="/dashboard/history"
+            className={`block w-full rounded-md px-2 py-1 hover:bg-blue-400 ${isActive("/dashboard/history") ? "bg-blue-400" : ""}`}
+          >
+            Riwayat
           </Link>
         </div>
       </div>

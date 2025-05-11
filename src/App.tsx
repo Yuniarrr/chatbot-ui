@@ -6,6 +6,10 @@ import DashboardUser from "./pages/dashboard/User";
 import DashboardFile from "./pages/dashboard/File";
 import DashboardTool from "./pages/dashboard/Tool";
 import PrivateRoute from "./routes/PrivateRoute";
+import DashboardHistory from "./pages/dashboard/History";
+import ConversationDetail from "./pages/dashboard/History/ConversationDetail";
+import DashboardCollection from "./pages/dashboard/Collection";
+import DashboardProgram from "./pages/dashboard/Program";
 
 function App() {
   return (
@@ -21,6 +25,10 @@ function App() {
               <Route index element={<DashboardUser />} />
               <Route path="file" element={<DashboardFile />} />
               <Route path="tool" element={<DashboardTool />} />
+              <Route path="history" element={<DashboardHistory />} />
+              <Route path="koleksi" element={<DashboardCollection />} />
+              <Route path="program" element={<DashboardProgram />} />
+              <Route path="history/:id" element={<ConversationDetail />} />
             </Route>
           </Route>
         </Routes>

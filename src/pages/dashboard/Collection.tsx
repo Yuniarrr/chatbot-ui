@@ -1,70 +1,57 @@
 import { useEffect, useState } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import type { FileItem } from "../../types/file";
-import { getFiles as fetchFiles } from "../../services/fileService";
-import FileModal from "../../components/modal/FileModal";
-import UpdateFileModal from "../../components/modal/UpdateFileModal";
+import type { CollectionItem } from "../../types/collection";
 import DeleteModal from "../../components/modal/DeleteModal";
-import Pagination from "../../components/pagination/Pagination";
+import UpdateCollectionModal from "../../components/modal/UpdateCollectionModal";
 
-const DashboardFile = () => {
-  const files: FileItem[] = [
+const DashboardCollection = () => {
+  const items: CollectionItem[] = [
     {
-      id: "55aab0e9-03bc-4c79-89a0-fcb613977c50",
-      file_name:
-        "55aab0e9-03bc-4c79-89a0-fcb613977c50_Daftar Dosen - Departemen Teknologi Informasi.pdf",
-      file_path: `F:\\project\\chatbot-ta\\chatbot-service\\data\\uploads\\55aab0e9-03bc-4c79-89a0-fcb613977c50_Daftar Dosen - Departemen Teknologi Informasi.pdf`,
-      status: "SUCCESS",
+      id: "a",
+      collection_name: "administration",
+      collection_status: "ACTIVE",
       created_at: "2025-05-06 18:03:15.551948+00",
-      updated_at: "2025-05-06 18:03:30.603538+00",
-      user_id: "3434cf60-c944-4cb3-baa8-d66a5511e5cf",
-      meta: {
-        name: "Daftar Dosen - Departemen Teknologi Informasi.pdf",
-        content_type: "application/pdf",
-        size: 488280,
-        collection_name: "a",
-      },
     },
   ];
 
-  const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
-
-  const openEditModal = (file: FileItem) => {
-    setSelectedFile(file);
-    setShowEditModal(true);
-  };
-
-  const closeEditModal = () => {
-    setShowEditModal(false);
-    setSelectedFile(null);
-  };
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedCollection, setSelectedCollection] =
+    useState<CollectionItem | null>(null);
 
   const openDeleteModal = () => {
     setShowDeleteModal(!showDeleteModal);
   };
 
+  const openEditModal = (user: CollectionItem) => {
+    setSelectedCollection(user);
+    setShowEditModal(true);
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setSelectedCollection(null);
+  };
+
   // const { accessToken } = useAuth();
-  // const [files, setFiles] = useState<FileItem[]>([]);
+  // const [users, setUsers] = useState<UserItem[]>([]);
 
   // useEffect(() => {
-  //   const getFiles = async () => {
+  //   const getUsers = async () => {
   //     if (!accessToken) return;
   //     try {
-  //       const data = await fetchFiles(accessToken);
-  //       setFiles(data);
+  //       const data = await fetchUsers(accessToken);
+  //       setUsers(data);
   //     } catch (error) {
   //       console.error("Failed to fetch files:", error);
   //     }
   //   };
 
-  //   getFiles();
+  //   getUsers();
   // }, [accessToken]);
 
   return (
     <div className="flex w-full flex-col gap-y-3">
-      <h2 className="text-2xl font-semibold">Dashboard File</h2>
+      <h2 className="text-2xl font-semibold">Dashboard Koleksi</h2>
 
       <div className="flex w-full flex-row justify-between">
         <label htmlFor="simple-search" className="sr-only">
@@ -103,15 +90,15 @@ const DashboardFile = () => {
           </button>
         </div>
 
-        <FileModal />
+        {/* <UserModal /> */}
       </div>
 
       <DeleteModal id={"a"} onClick={openDeleteModal} value={showDeleteModal} />
 
-      {selectedFile && showEditModal && (
-        <UpdateFileModal
+      {selectedCollection && showEditModal && (
+        <UpdateCollectionModal
           showModal={showEditModal}
-          file={selectedFile}
+          collection={selectedCollection}
           onClick={closeEditModal}
         />
       )}
@@ -124,24 +111,21 @@ const DashboardFile = () => {
                 No.
               </th>
               <th scope="col" className="px-6 py-3">
-                Filename
+                Koleksi
               </th>
               <th scope="col" className="px-6 py-3">
-                Status
+                <span>Status</span>
               </th>
               <th scope="col" className="px-6 py-3">
-                Kategori
-              </th>
-              <th scope="col" className="px-0.5 py-4">
                 <span className="sr-only">Edit</span>
               </th>
-              <th scope="col" className="px-0.5 py-4">
+              <th scope="col" className="px-6 py-3">
                 <span className="sr-only">Delete</span>
               </th>
             </tr>
           </thead>
           <tbody>
-            {files.map((file, index) => (
+            {items.map((item, index) => (
               <tr className="border-b border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
                 <th
                   scope="row"
@@ -149,14 +133,11 @@ const DashboardFile = () => {
                 >
                   {index + 1}
                 </th>
-                <td className="px-6 py-4 hover:cursor-pointer hover:underline">
-                  {file.meta.name}
-                </td>
-                <td className="px-6 py-4">{file.status}</td>
-                <td className="px-6 py-4">{file.meta.collection_name}</td>
+                <td className="px-6 py-4">{item.collection_name}</td>
+                <td className="px-6 py-4">{item.collection_status}</td>
                 <td
                   className="cursor-pointer px-0.5 py-4"
-                  onClick={() => openEditModal(file)}
+                  onClick={() => openEditModal(item)}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -198,9 +179,61 @@ const DashboardFile = () => {
         </table>
       </div>
 
-      <Pagination />
+      <div className="flex flex-col items-center">
+        <span className="text-sm text-gray-700 dark:text-gray-400">
+          Showing{" "}
+          <span className="font-semibold text-gray-900 dark:text-white">1</span>{" "}
+          to{" "}
+          <span className="font-semibold text-gray-900 dark:text-white">
+            10
+          </span>{" "}
+          of{" "}
+          <span className="font-semibold text-gray-900 dark:text-white">
+            100
+          </span>{" "}
+          Entries
+        </span>
+        <div className="xs:mt-0 mt-2 inline-flex">
+          <button className="flex h-8 cursor-pointer items-center justify-center rounded-s bg-gray-600 px-3 text-sm font-medium text-white hover:bg-gray-900 dark:border-gray-700 dark:bg-gray-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+            <svg
+              className="me-2 h-3.5 w-3.5 rtl:rotate-180"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 14 10"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 5H1m0 0 4 4M1 5l4-4"
+              />
+            </svg>
+            Prev
+          </button>
+          <button className="flex h-8 cursor-pointer items-center justify-center rounded-e border-0 border-s border-gray-700 bg-gray-600 px-3 text-sm font-medium text-white hover:bg-gray-900 dark:border-gray-700 dark:bg-gray-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+            Next
+            <svg
+              className="ms-2 h-3.5 w-3.5 rtl:rotate-180"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 14 10"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M1 5h12m0 0L9 1m4 4L9 9"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default DashboardFile;
+export default DashboardCollection;
