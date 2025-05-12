@@ -27,8 +27,11 @@ const Login = () => {
 
   return (
     <div className="flex h-screen w-full flex-row gap-x-5">
-      <div className="my-auto w-1/2">
+      <div className="my-auto w-full sm:w-1/2">
         <div className="flex flex-col items-center gap-y-2">
+          <label htmlFor="title" className="my-2 text-2xl font-semibold">
+            Selamat Datang
+          </label>
           <div className="flex w-1/2 flex-col gap-y-3">
             <div>
               <label
@@ -76,9 +79,12 @@ const Login = () => {
           </div>
         </div>
       </div>
-      <div className="flex w-1/2 flex-col items-center justify-center bg-blue-400">
+      <div className="hidden w-1/2 flex-col items-center justify-center bg-blue-400 sm:flex">
         <p className="text-2xl font-bold">CATI</p>
-        <p className="text-xl">Chatbot Departemen Teknologi Informasi</p>
+        <p className="text-xl">
+          Chatbot Departemen <br className="block xl:hidden" />
+          Teknologi Informasi
+        </p>
       </div>
     </div>
   );

@@ -90,11 +90,12 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({
                 id="role"
                 value={user.role}
                 isDropdown={true}
+                isBase={false}
                 //   onChange={(e) => setName(e.target.value)}
                 placeholder="Masukkan role"
                 listDropdown={[
                   { key: "Pengguna", value: "USER" },
-                  { key: "ADMINISTRATOR", value: "Admin" },
+                  { key: "Admin", value: "ADMINISTRATOR" },
                 ]}
               />
               <button

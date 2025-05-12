@@ -2,16 +2,10 @@ import { useState } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
-// import workerSrc from "pdfjs-dist/build/pdf.worker.min.js?url";
 import InputField from "../Input/InputField";
 import formatTime from "../../utils/formatTime";
 import type { FileItem } from "../../types/file";
 
-// pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-//   "pdfjs-dist/build/pdf.worker.min.mjs",
-//   import.meta.url,
-// ).toString();
-// pdfjs.GlobalWorkerOptions.workerSrc = "/assets/pdf.worker.min.mjs";
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface UpdateFileModalProps {
@@ -30,7 +24,6 @@ const UpdateFileModal: React.FC<UpdateFileModalProps> = ({
   const filePath = `http://localhost:8080/api/v1/dev/uploads/${file.file_name}`;
 
   function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
-    console.log("PDF page count:", numPages);
     setNumPages(numPages);
   }
 
@@ -77,7 +70,7 @@ const UpdateFileModal: React.FC<UpdateFileModalProps> = ({
           </div>
 
           <div className="flex max-w-full flex-row">
-            <div className="w-1/2 p-4 md:p-5">
+            <div className="w-full p-4 sm:w-1/2 md:p-5">
               <form className="space-y-4" action="#">
                 <InputField
                   label="Nama File"
@@ -125,7 +118,7 @@ const UpdateFileModal: React.FC<UpdateFileModalProps> = ({
                 </button>
               </form>
             </div>
-            <div className="mx-auto max-h-[80vh] w-1/2 overflow-y-auto rounded-lg border-2 border-gray-300 bg-gray-50 p-4">
+            <div className="mx-auto hidden max-h-[80vh] w-1/2 overflow-y-auto rounded-lg border-2 border-gray-300 bg-gray-50 p-4 sm:block">
               <Document
                 file={filePath}
                 onLoadSuccess={onDocumentLoadSuccess}

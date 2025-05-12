@@ -75,10 +75,10 @@ const InfoConversationModal: React.FC<InfoConversationModalProps> = ({
             <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
               <thead className="bg-gray-100 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
                 <tr>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope="col" className="px-4 py-3 sm:px-6">
                     No.
                   </th>
-                  <th scope="col" className="px-6 py-3">
+                  <th scope="col" className="px-2 py-3 sm:px-6">
                     Judul
                   </th>
                   <th scope="col" className="px-0.5 py-4">
@@ -94,11 +94,11 @@ const InfoConversationModal: React.FC<InfoConversationModalProps> = ({
                   <tr className="border-b border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
                     <th
                       scope="row"
-                      className="px-6 py-4 font-medium whitespace-nowrap text-gray-900 dark:text-white"
+                      className="px-4 py-4 font-medium whitespace-nowrap text-gray-900 sm:px-6 dark:text-white"
                     >
                       {index + 1}
                     </th>
-                    <td className="px-6 py-4">{item.title}</td>
+                    <td className="px-2 py-4 sm:px-6">{item.title}</td>
                     <td
                       className="cursor-pointer px-0.5 py-4"
                       onClick={() => openConversationDetail(item.id)}

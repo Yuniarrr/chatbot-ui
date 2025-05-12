@@ -68,6 +68,7 @@ const UpdateCollectionModal: React.FC<UpdateCollectionModalProps> = ({
                 id="status"
                 value={collection.collection_status}
                 isDropdown={true}
+                isBase={false}
                 //   onChange={(e) => setName(e.target.value)}
                 placeholder="Pilih status"
                 listDropdown={[

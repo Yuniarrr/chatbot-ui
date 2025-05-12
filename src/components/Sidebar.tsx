@@ -1,7 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
-const Sidebar = () => {
+interface SidebarProps {
+  showSidebar: boolean;
+  onClick: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ onClick, showSidebar }) => {
   const { logout } = useAuth();
 
   const location = useLocation();
@@ -10,24 +15,27 @@ const Sidebar = () => {
 
   return (
     <div className="flex h-screen w-full flex-col justify-between bg-blue-300 px-5 py-6">
-      <div className="flex flex-col gap-y-4">
+      <div className="z-10 flex flex-col gap-y-4">
         <h3 className="text-center font-medium">CATI Dashboard</h3>
         <div className="flex flex-col items-start gap-y-3">
           <Link
             to="/dashboard"
             className={`block w-full rounded-md px-2 py-1 hover:bg-blue-400 ${isActive("/dashboard") ? "bg-blue-400" : ""}`}
+            onClick={onClick}
           >
             Pengguna
           </Link>
           <Link
             to="/dashboard/koleksi"
             className={`block w-full rounded-md px-2 py-1 hover:bg-blue-400 ${isActive("/dashboard/koleksi") ? "bg-blue-400" : ""}`}
+            onClick={onClick}
           >
             Koleksi
           </Link>
           <Link
             to="/dashboard/file"
             className={`block w-full rounded-md px-2 py-1 hover:bg-blue-400 ${isActive("/dashboard/file") ? "bg-blue-400" : ""}`}
+            onClick={onClick}
           >
             File
           </Link>
@@ -40,12 +48,14 @@ const Sidebar = () => {
           <Link
             to="/dashboard/program"
             className={`block w-full rounded-md px-2 py-1 hover:bg-blue-400 ${isActive("/dashboard/program") ? "bg-blue-400" : ""}`}
+            onClick={onClick}
           >
             Program
           </Link>
           <Link
             to="/dashboard/history"
             className={`block w-full rounded-md px-2 py-1 hover:bg-blue-400 ${isActive("/dashboard/history") ? "bg-blue-400" : ""}`}
+            onClick={onClick}
           >
             Riwayat
           </Link>
@@ -54,7 +64,10 @@ const Sidebar = () => {
       <div>
         <button
           className="flex w-full cursor-pointer flex-row items-center justify-center gap-x-2 rounded-md p-2 hover:bg-blue-400"
-          onClick={logout}
+          onClick={() => {
+            logout();
+            onClick();
+          }}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -71,6 +84,10 @@ const Sidebar = () => {
           Logout
         </button>
       </div>
+      <div
+        className="absolute inset-0 -z-50 bg-black opacity-50 sm:hidden"
+        onClick={onClick}
+      />
     </div>
   );
 };

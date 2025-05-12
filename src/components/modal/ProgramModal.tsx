@@ -1,10 +1,12 @@
 import { useState } from "react";
 import InputField from "../Input/InputField";
 
-const UserModal = () => {
+const ProgramModal = () => {
   const [showModal, setShowModal] = useState(false);
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(new Date());
 
-  const modalUploadFile = () => {
+  const modalAddProgram = () => {
     setShowModal(!showModal);
   };
 
@@ -15,7 +17,7 @@ const UserModal = () => {
         data-modal-target="dashboardModal"
         data-modal-toggle="dashboardModal"
         type="button"
-        onClick={modalUploadFile}
+        onClick={modalAddProgram}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -31,7 +33,7 @@ const UserModal = () => {
             d="M12 4.5v15m7.5-7.5h-15"
           />
         </svg>
-        <p className="font-semibold text-white">Tambah User Baru</p>
+        <p className="font-semibold text-white">Tambah Program Baru</p>
       </button>
 
       <div
@@ -45,20 +47,20 @@ const UserModal = () => {
       >
         <div
           className="absolute inset-0 bg-black opacity-50"
-          onClick={modalUploadFile}
+          onClick={modalAddProgram}
         />
 
-        <div className="relative w-full max-w-md rounded-lg p-4 shadow dark:bg-gray-700">
+        <div className="relative max-w-2xl overflow-y-auto rounded-lg p-4 shadow sm:h-full sm:w-full sm:overflow-y-hidden dark:bg-gray-700">
           <div className="relative rounded-lg bg-white shadow-sm dark:bg-gray-700">
             <div className="flex items-center justify-between rounded-t border-b border-gray-200 p-4 md:p-5 dark:border-gray-600">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Tambah User Baru
+                Tambah Program Baru
               </h3>
               <button
                 type="button"
                 className="end-2.5 ms-auto inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
                 data-modal-hide="dashboardModal"
-                onClick={modalUploadFile}
+                onClick={modalAddProgram}
               >
                 <svg
                   className="h-3 w-3"
@@ -82,39 +84,80 @@ const UserModal = () => {
             <div className="p-4 md:p-5">
               <form className="space-y-4" action="#">
                 <InputField
-                  label="Nama Lengkap"
-                  id="namaLengkap"
+                  label="Nama Program"
+                  id="namaProgram"
                   value={""}
                   //   onChange={(e) => setName(e.target.value)}
-                  placeholder="Masukkan nama lengkap"
+                  placeholder="Masukkan nama program"
                 />
                 <InputField
-                  label="Email"
-                  id="email"
+                  label="Deskripsi Program"
+                  id="deskripsiProgram"
+                  isTextarea={true}
+                  isBase={false}
                   value={""}
                   //   onChange={(e) => setName(e.target.value)}
-                  placeholder="Masukkan email"
-                />
-                <InputField
-                  label="Nomer Telepon"
-                  id="nomerTelepon"
-                  value={""}
-                  //   onChange={(e) => setName(e.target.value)}
-                  placeholder="Masukkan nomer telepon"
+                  placeholder="Masukkan deskripsi program"
                   required={false}
                 />
                 <InputField
-                  label="Role"
-                  id="role"
-                  value={"USER"}
+                  label="Penyelenggara Program"
+                  id="penyelenggaraProgram"
+                  value={""}
+                  //   onChange={(e) => setName(e.target.value)}
+                  placeholder="Masukkan nama penyelenggara program"
+                  required={false}
+                />
+                <InputField
+                  label="Jenis Program"
+                  id="jenisProgram"
+                  value={""}
                   isDropdown={true}
                   isBase={false}
                   //   onChange={(e) => setName(e.target.value)}
-                  placeholder="Masukkan role"
+                  placeholder="Pilih program"
                   listDropdown={[
-                    { key: "Pengguna", value: "USER" },
-                    { key: "Admin", value: "ADMINISTRATOR" },
+                    { key: "Beasiswa", value: "BEASISWA" },
+                    { key: "Magang", value: "MAGANG" },
+                    { key: "Lomba", value: "LOMBA" },
+                    { key: "Sertifikasi", value: "SERTIFIKASI" },
                   ]}
+                />
+                <InputField
+                  label="Tanggal Dimulai Program"
+                  id="startProgram"
+                  isDate={true}
+                  isBase={false}
+                  value={""}
+                  onChange={(date) => setStartDate(date as Date)}
+                  placeholder="Masukkan tanggal dimulai program"
+                  required={false}
+                />
+                <InputField
+                  label="Tanggal Selesai Program"
+                  id="endProgram"
+                  isDate={true}
+                  isBase={false}
+                  value={""}
+                  onChange={(date) => setEndDate(date as Date)}
+                  placeholder="Masukkan tanggal selesai program"
+                  required={false}
+                />
+                <InputField
+                  label="Link atau URL terkait Program"
+                  id="linkProgram"
+                  value={""}
+                  //   onChange={(e) => setName(e.target.value)}
+                  placeholder="Masukkan url terkait program"
+                  required={false}
+                />
+                <InputField
+                  label="Gambar terkait Program"
+                  id="imageProgram"
+                  value={""}
+                  //   onChange={(e) => setName(e.target.value)}
+                  placeholder="Masukkan gambar terkait program"
+                  required={false}
                 />
                 <button
                   type="submit"
@@ -131,4 +174,4 @@ const UserModal = () => {
   );
 };
 
-export default UserModal;
+export default ProgramModal;

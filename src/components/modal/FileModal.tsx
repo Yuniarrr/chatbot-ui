@@ -105,6 +105,7 @@ const FileModal = () => {
                   //   onChange={(e) => setName(e.target.value)}
                   placeholder="Masukkan koleksi / folder"
                   isDropdown={true}
+                  isBase={false}
                   listDropdown={listDropdown}
                   name="koleksi"
                 />
