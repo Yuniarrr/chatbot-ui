@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import type { UserItem } from "../../types/user";
 import { getUsers as fetchUsers } from "../../services/userService";
@@ -44,20 +44,20 @@ const DashboardUser = () => {
     total: 0,
   });
 
-  useEffect(() => {
-    const getUsers = async () => {
-      if (!accessToken) return;
-      try {
-        const data = await fetchUsers(accessToken);
-        setUsers(data.data);
-        setPagination(data.meta);
-      } catch (error) {
-        console.error("Failed to fetch files:", error);
-      }
-    };
-
-    getUsers();
+  const getUsers = useCallback(async () => {
+    if (!accessToken) return;
+    try {
+      const data = await fetchUsers(accessToken);
+      setUsers(data.data);
+      setPagination(data.meta);
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    }
   }, [accessToken]);
+
+  useEffect(() => {
+    getUsers();
+  }, [getUsers]);
 
   return (
     <div className="flex flex-col gap-y-3">
@@ -66,7 +66,7 @@ const DashboardUser = () => {
       <div className="flex max-w-fit flex-col gap-y-3 overflow-x-hidden sm:max-w-full sm:flex-row sm:justify-between sm:gap-y-0">
         <SearchField />
 
-        <UserModal />
+        <UserModal refetchUsers={getUsers} />
       </div>
 
       <DeleteModal id={"a"} onClick={openDeleteModal} value={showDeleteModal} />

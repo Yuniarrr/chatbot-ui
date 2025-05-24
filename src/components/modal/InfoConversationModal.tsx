@@ -14,17 +14,6 @@ const InfoConversationModal: React.FC<InfoConversationModalProps> = ({
   onClick,
   conversations,
 }) => {
-  // const items: ConversationItem[] = [
-  //   {
-  //     id: "a",
-  //     title: "hai",
-  //     sender: "wa",
-  //     user_id: "a",
-  //     created_at: "2025-05-06 18:03:15.551948+00",
-  //     updated_at: null,
-  //   },
-  // ];
-
   const navigate = useNavigate();
 
   const openConversationDetail = (id: string) => {

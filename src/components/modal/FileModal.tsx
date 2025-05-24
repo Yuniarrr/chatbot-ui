@@ -21,9 +21,6 @@ const FileModal = () => {
   const [url, setUrl] = useState("");
   const [text, setText] = useState("");
 
-  console.log("tipeDoc");
-  console.log(tipeDoc);
-
   useEffect(() => {
     const fetchCollection = async () => {
       if (!accessToken) return;
