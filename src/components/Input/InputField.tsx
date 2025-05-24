@@ -7,7 +7,7 @@ interface InputFieldProps {
   label: string;
   id: string;
   name?: string;
-  value: string;
+  value: string | Date;
   onChange?: (
     e:
       | React.ChangeEvent<

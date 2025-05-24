@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { ProgramItem } from "../../types/program";
 import Pagination from "../../components/pagination/Pagination";
 import DeleteModal from "../../components/modal/DeleteModal";
@@ -58,24 +58,24 @@ const DashboardProgram = () => {
     total: 0,
   });
 
-  useEffect(() => {
-    const fetchPrograms = async () => {
-      if (!accessToken) return;
-      try {
-        const data = await getPrograms(
-          accessToken,
-          pagination.skip,
-          pagination.limit,
-        );
-        setPrograms(data.data);
-        setPagination(data.meta);
-      } catch (error) {
-        console.error("Failed to fetch programs:", error);
-      }
-    };
-
-    fetchPrograms();
+  const fetchPrograms = useCallback(async () => {
+    if (!accessToken) return;
+    try {
+      const data = await getPrograms(
+        accessToken,
+        pagination.skip,
+        pagination.limit,
+      );
+      setPrograms(data.data);
+      setPagination(data.meta);
+    } catch (error) {
+      console.error("Failed to fetch programs:", error);
+    }
   }, [accessToken, pagination.limit, pagination.skip]);
+
+  useEffect(() => {
+    fetchPrograms();
+  }, [fetchPrograms]);
 
   return (
     <div className="flex w-full flex-col gap-y-3">
@@ -84,7 +84,7 @@ const DashboardProgram = () => {
       <div className="flex max-w-fit flex-col gap-y-3 overflow-x-hidden sm:max-w-full sm:flex-row sm:justify-between sm:gap-y-0">
         <SearchField />
 
-        <ProgramModal />
+        <ProgramModal refetchPrograms={fetchPrograms} />
       </div>
 
       {selectedItem && showDeleteModal && (
