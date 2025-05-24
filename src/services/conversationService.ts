@@ -41,8 +41,6 @@ export const getMessages = async (
   skip = 0,
   limit = 10,
 ) => {
-  console.log("param");
-  console.log(conversationId);
   const response = await axiosInstance.get(
     `/conversation/message/${conversationId}?skip=${skip}&limit=${limit}`,
     {

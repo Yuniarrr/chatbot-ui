@@ -8,10 +8,7 @@ import InfoConversationModal from "../../components/modal/InfoConversationModal"
 import Pagination from "../../components/pagination/Pagination";
 import SearchField from "../../components/Input/SearchField";
 import { useAuth } from "../../contexts/AuthContext";
-import {
-  getConversations,
-  getSenderConversation,
-} from "../../services/conversationService";
+import { getSenderConversation } from "../../services/conversationService";
 import type { IPagination } from "../../types/pagination";
 
 const DashboardHistory = () => {
@@ -20,30 +17,7 @@ const DashboardHistory = () => {
   const [selectedUser, setSelectedUser] =
     useState<ListUniqueConversationItem | null>(null);
 
-  const [conversations, setConversations] = useState<ConversationItem[]>([]);
-  const [convPagination, setConvPagination] = useState<IPagination>({
-    end: 0,
-    is_next: false,
-    is_prev: false,
-    limit: 10,
-    skip: 0,
-    start: 0,
-    total: 0,
-  });
-
-  const getConv = async (param: string) => {
-    if (!accessToken) return;
-    try {
-      const data = await getConversations(accessToken, param);
-      setConversations(data.data);
-      setConvPagination(data.meta);
-    } catch (error) {
-      console.error("Failed to fetch conversation:", error);
-    }
-  };
-
   const openInfoModal = async (info: ListUniqueConversationItem) => {
-    await getConv(info.user_id || info.sender || "");
     setSelectedUser(info);
     setShowInfoModal(true);
   };
@@ -98,15 +72,13 @@ const DashboardHistory = () => {
         <SearchField />
       </div>
 
-      <DeleteModal id={"a"} onClick={openDeleteModal} value={showDeleteModal} />
+      <DeleteModal onCancel={openDeleteModal} value={showDeleteModal} />
 
       {selectedUser && showInfoModal && (
         <InfoConversationModal
           showModal={showInfoModal}
           onClick={closeInfoModal}
-          conversations={conversations}
-          pagination={convPagination}
-          setPagination={setPagination}
+          sender={selectedUser?.sender || selectedUser?.user_id || ""}
         />
       )}
 

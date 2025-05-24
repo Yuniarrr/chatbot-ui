@@ -2,27 +2,58 @@ import type { ConversationItem } from "../../types/conversation";
 import Pagination from "../../components/pagination/Pagination";
 import { useNavigate } from "react-router-dom";
 import type { IPagination } from "../../types/pagination";
+import { useEffect, useState } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import { getConversations } from "../../services/conversationService";
 
 interface InfoConversationModalProps {
   showModal: boolean;
   onClick: () => void;
-  conversations: ConversationItem[] | [];
-  pagination: IPagination;
-  setPagination: (value: React.SetStateAction<IPagination>) => void;
+  sender: string;
 }
 
 const InfoConversationModal: React.FC<InfoConversationModalProps> = ({
   showModal,
   onClick,
-  conversations,
-  pagination,
-  setPagination,
+  sender,
 }) => {
   const navigate = useNavigate();
+  const { accessToken } = useAuth();
+
+  const [conversations, setConversations] = useState<ConversationItem[]>([]);
+  const [pagination, setPagination] = useState<IPagination>({
+    end: 0,
+    is_next: false,
+    is_prev: false,
+    limit: 10,
+    skip: 0,
+    start: 0,
+    total: 0,
+  });
 
   const openConversationDetail = (id: string) => {
     return navigate(`/dashboard/history/${id}`);
   };
+
+  useEffect(() => {
+    const fetchConversations = async () => {
+      if (!accessToken) return;
+      try {
+        const data = await getConversations(
+          accessToken,
+          sender,
+          pagination.skip,
+          pagination.limit,
+        );
+        setConversations(data.data);
+        setPagination(data.meta);
+      } catch (error) {
+        console.error("Failed to fetch conversation:", error);
+      }
+    };
+
+    fetchConversations();
+  }, [accessToken, pagination.limit, pagination.skip, sender]);
 
   return (
     <div
@@ -91,7 +122,7 @@ const InfoConversationModal: React.FC<InfoConversationModalProps> = ({
                       scope="row"
                       className="px-4 py-4 font-medium whitespace-nowrap text-gray-900 sm:px-6 dark:text-white"
                     >
-                      {index + 1}
+                      {index + 1 + pagination.skip}
                     </th>
                     <td className="px-2 py-4 sm:px-6">{item.title}</td>
                     <td
