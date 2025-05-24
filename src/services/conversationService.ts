@@ -52,3 +52,43 @@ export const getMessages = async (
 
   return response.data.data;
 };
+
+export const deleteConversationById = async (
+  token: string,
+  conversationId: string,
+) => {
+  try {
+    const response = await axiosInstance.delete(
+      `/conversation/${conversationId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const deleteConversationBySender = async (
+  token: string,
+  param: string,
+) => {
+  try {
+    const response = await axiosInstance.delete(
+      `/conversation?sender=${param}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error) {
+    return error;
+  }
+};

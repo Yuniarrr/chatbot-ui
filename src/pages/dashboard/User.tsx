@@ -54,7 +54,7 @@ const DashboardUser = () => {
   }, [accessToken]);
 
   const onDeleteUser = async () => {
-    setLoading(false);
+    setLoading(true);
     if (!accessToken) return;
     if (selectedUserId === "") return;
     try {
@@ -63,7 +63,7 @@ const DashboardUser = () => {
     } catch (error) {
       console.error("Failed to delete user:", error);
     }
-    setLoading(true);
+    setLoading(false);
     setShowDeleteModal(false);
     setSelectedUserId("");
   };

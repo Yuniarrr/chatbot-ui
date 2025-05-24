@@ -71,7 +71,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
                 />
               </svg>
               <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                Apakah kamu yakin untuk menghapusnya?
+                Apakah anda yakin untuk menghapusnya?
               </h3>
               <button
                 onClick={async () => await onConfirm()}

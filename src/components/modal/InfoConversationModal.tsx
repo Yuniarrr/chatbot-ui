@@ -2,9 +2,13 @@ import type { ConversationItem } from "../../types/conversation";
 import Pagination from "../../components/pagination/Pagination";
 import { useNavigate } from "react-router-dom";
 import type { IPagination } from "../../types/pagination";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import { getConversations } from "../../services/conversationService";
+import {
+  deleteConversationById,
+  getConversations,
+} from "../../services/conversationService";
+import DeleteModal from "./DeleteModal";
 
 interface InfoConversationModalProps {
   showModal: boolean;
@@ -19,6 +23,10 @@ const InfoConversationModal: React.FC<InfoConversationModalProps> = ({
 }) => {
   const navigate = useNavigate();
   const { accessToken } = useAuth();
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [selectedConversationId, setSelectedConversationId] = useState("");
 
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [pagination, setPagination] = useState<IPagination>({
@@ -35,25 +43,44 @@ const InfoConversationModal: React.FC<InfoConversationModalProps> = ({
     return navigate(`/dashboard/history/${id}`);
   };
 
-  useEffect(() => {
-    const fetchConversations = async () => {
-      if (!accessToken) return;
-      try {
-        const data = await getConversations(
-          accessToken,
-          sender,
-          pagination.skip,
-          pagination.limit,
-        );
-        setConversations(data.data);
-        setPagination(data.meta);
-      } catch (error) {
-        console.error("Failed to fetch conversation:", error);
-      }
-    };
+  const openDeleteModal = () => {
+    setShowDeleteModal(!showDeleteModal);
+  };
 
-    fetchConversations();
+  const onDeleteConversation = async () => {
+    setLoading(true);
+    if (!accessToken) return;
+    if (selectedConversationId === "") return;
+    try {
+      await deleteConversationById(accessToken, selectedConversationId);
+      await fetchConversations();
+    } catch (error) {
+      console.error("Failed to delete user:", error);
+    }
+    setLoading(false);
+    setShowDeleteModal(false);
+    setSelectedConversationId("");
+  };
+
+  const fetchConversations = useCallback(async () => {
+    if (!accessToken) return;
+    try {
+      const data = await getConversations(
+        accessToken,
+        sender,
+        pagination.skip,
+        pagination.limit,
+      );
+      setConversations(data.data);
+      setPagination(data.meta);
+    } catch (error) {
+      console.error("Failed to fetch conversation:", error);
+    }
   }, [accessToken, pagination.limit, pagination.skip, sender]);
+
+  useEffect(() => {
+    fetchConversations();
+  }, [fetchConversations]);
 
   return (
     <div
@@ -65,6 +92,13 @@ const InfoConversationModal: React.FC<InfoConversationModalProps> = ({
       }`}
     >
       <div className="absolute inset-0 bg-black opacity-50" onClick={onClick} />
+
+      <DeleteModal
+        onCancel={openDeleteModal}
+        value={showDeleteModal}
+        isLoading={loading}
+        onConfirm={onDeleteConversation}
+      />
 
       <div className="relative h-screen w-full max-w-4/5 shadow dark:bg-gray-700">
         <div className="relative h-full rounded-l-lg bg-white shadow-sm dark:bg-gray-700">
@@ -146,7 +180,10 @@ const InfoConversationModal: React.FC<InfoConversationModalProps> = ({
                     </td>
                     <td
                       className="cursor-pointer px-0.5 py-4"
-                      //   onClick={openDeleteModal}
+                      onClick={() => {
+                        openDeleteModal();
+                        setSelectedConversationId(item.id);
+                      }}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

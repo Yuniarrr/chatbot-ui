@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import DeleteModal from "../../components/modal/DeleteModal";
 import type {
   ConversationItem,
@@ -8,12 +8,17 @@ import InfoConversationModal from "../../components/modal/InfoConversationModal"
 import Pagination from "../../components/pagination/Pagination";
 import SearchField from "../../components/Input/SearchField";
 import { useAuth } from "../../contexts/AuthContext";
-import { getSenderConversation } from "../../services/conversationService";
+import {
+  getSenderConversation,
+  deleteConversationBySender,
+} from "../../services/conversationService";
 import type { IPagination } from "../../types/pagination";
 
 const DashboardHistory = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [selectedSender, setSelectedSender] = useState("");
   const [selectedUser, setSelectedUser] =
     useState<ListUniqueConversationItem | null>(null);
 
@@ -23,12 +28,14 @@ const DashboardHistory = () => {
   };
 
   const closeInfoModal = () => {
+    setLoading(false);
     setShowInfoModal(false);
     setSelectedUser(null);
   };
 
   const openDeleteModal = () => {
     setShowDeleteModal(!showDeleteModal);
+    setLoading(false);
   };
 
   const { accessToken } = useAuth();
@@ -45,24 +52,39 @@ const DashboardHistory = () => {
     total: 0,
   });
 
-  useEffect(() => {
-    const fetchConversations = async () => {
-      if (!accessToken) return;
-      try {
-        const data = await getSenderConversation(
-          accessToken,
-          pagination.skip,
-          pagination.limit,
-        );
-        setListConversations(data.data);
-        setPagination(data.meta);
-      } catch (error) {
-        console.error("Failed to fetch files:", error);
-      }
-    };
-
-    fetchConversations();
+  const fetchConversations = useCallback(async () => {
+    if (!accessToken) return;
+    try {
+      const data = await getSenderConversation(
+        accessToken,
+        pagination.skip,
+        pagination.limit,
+      );
+      setListConversations(data.data);
+      setPagination(data.meta);
+    } catch (error) {
+      console.error("Failed to fetch files:", error);
+    }
   }, [accessToken, pagination.limit, pagination.skip]);
+
+  const onDeleteBySender = async () => {
+    setLoading(true);
+    if (!accessToken) return;
+    if (selectedSender === "") return;
+    try {
+      await deleteConversationBySender(accessToken, selectedSender);
+      await fetchConversations();
+    } catch (error) {
+      console.error("Failed to delete sender:", error);
+    }
+    setLoading(false);
+    setShowDeleteModal(false);
+    setSelectedSender("");
+  };
+
+  useEffect(() => {
+    fetchConversations();
+  }, [fetchConversations]);
 
   return (
     <div className="flex w-full flex-col gap-y-3">
@@ -72,7 +94,12 @@ const DashboardHistory = () => {
         <SearchField />
       </div>
 
-      <DeleteModal onCancel={openDeleteModal} value={showDeleteModal} />
+      <DeleteModal
+        onCancel={openDeleteModal}
+        value={showDeleteModal}
+        onConfirm={onDeleteBySender}
+        isLoading={loading}
+      />
 
       {selectedUser && showInfoModal && (
         <InfoConversationModal
@@ -140,7 +167,10 @@ const DashboardHistory = () => {
                   </td>
                   <td
                     className="cursor-pointer px-0.5 py-4"
-                    onClick={openDeleteModal}
+                    onClick={() => {
+                      openDeleteModal();
+                      setSelectedSender(item.sender || item.user_id || "");
+                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
