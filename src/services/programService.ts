@@ -55,3 +55,13 @@ export const addNewProgram = async ({
 
   return response.data.data;
 };
+
+export const deleteProgram = async (token: string, programId: string) => {
+  const response = await axiosInstance.delete(`/opportunity/${programId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};

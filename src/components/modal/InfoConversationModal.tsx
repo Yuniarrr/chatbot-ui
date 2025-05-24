@@ -1,18 +1,22 @@
 import type { ConversationItem } from "../../types/conversation";
 import Pagination from "../../components/pagination/Pagination";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import type { IPagination } from "../../types/pagination";
 
 interface InfoConversationModalProps {
   showModal: boolean;
   onClick: () => void;
-  conversations: ConversationItem[];
+  conversations: ConversationItem[] | [];
+  pagination: IPagination;
+  setPagination: (value: React.SetStateAction<IPagination>) => void;
 }
 
 const InfoConversationModal: React.FC<InfoConversationModalProps> = ({
   showModal,
   onClick,
   conversations,
+  pagination,
+  setPagination,
 }) => {
   const navigate = useNavigate();
 
@@ -134,7 +138,15 @@ const InfoConversationModal: React.FC<InfoConversationModalProps> = ({
             </table>
           </div>
 
-          <Pagination />
+          <Pagination
+            pagination={pagination}
+            onPageChange={(newSkip) => {
+              setPagination((prev) => ({
+                ...prev,
+                skip: newSkip,
+              }));
+            }}
+          />
         </div>
       </div>
     </div>

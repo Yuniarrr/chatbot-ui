@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import type { UserItem } from "../../types/user";
-import { getUsers as fetchUsers } from "../../services/userService";
+import { deleteUser, getUsers as fetchUsers } from "../../services/userService";
 import DeleteModal from "../../components/modal/DeleteModal";
 import UpdateUserModal from "../../components/modal/UpdateUserModal";
 import UserModal from "../../components/modal/UserModal";
@@ -10,13 +10,11 @@ import type { IPagination } from "../../types/pagination";
 import Pagination from "../../components/pagination/Pagination";
 
 const DashboardUser = () => {
-  // const users: UserItem[] = [
-  //   { id: "a", full_name: "a", email: "abc", role: "USER" },
-  // ];
-
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState("");
 
   const openDeleteModal = () => {
     setShowDeleteModal(!showDeleteModal);
@@ -55,6 +53,21 @@ const DashboardUser = () => {
     }
   }, [accessToken]);
 
+  const onDeleteUser = async () => {
+    setLoading(false);
+    if (!accessToken) return;
+    if (selectedUserId === "") return;
+    try {
+      await deleteUser(accessToken, selectedUserId);
+      await getUsers();
+    } catch (error) {
+      console.error("Failed to delete user:", error);
+    }
+    setLoading(true);
+    setShowDeleteModal(false);
+    setSelectedUserId("");
+  };
+
   useEffect(() => {
     getUsers();
   }, [getUsers]);
@@ -69,7 +82,12 @@ const DashboardUser = () => {
         <UserModal refetchUsers={getUsers} />
       </div>
 
-      <DeleteModal id={"a"} onClick={openDeleteModal} value={showDeleteModal} />
+      <DeleteModal
+        onCancel={openDeleteModal}
+        value={showDeleteModal}
+        onConfirm={onDeleteUser}
+        isLoading={loading}
+      />
 
       {selectedUser && showEditModal && (
         <UpdateUserModal
@@ -145,7 +163,10 @@ const DashboardUser = () => {
                   </td>
                   <td
                     className="cursor-pointer px-0.5 py-4"
-                    onClick={openDeleteModal}
+                    onClick={() => {
+                      openDeleteModal();
+                      setSelectedUserId(user?.id);
+                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

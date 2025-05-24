@@ -15,29 +15,30 @@ import {
 import type { IPagination } from "../../types/pagination";
 
 const DashboardHistory = () => {
-  // const items: ListUniqueConversationItem[] = [
-  //   {
-  //     sender: "whatsapp+62",
-  //     user_id: "a",
-  //   },
-  // ];
-
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showInfoModal, setShowInfoModal] = useState(false);
   const [selectedUser, setSelectedUser] =
     useState<ListUniqueConversationItem | null>(null);
 
-  const [conversations, setConversations] = useState<ConversationItem | null>(
-    null,
-  );
+  const [conversations, setConversations] = useState<ConversationItem[]>([]);
+  const [convPagination, setConvPagination] = useState<IPagination>({
+    end: 0,
+    is_next: false,
+    is_prev: false,
+    limit: 10,
+    skip: 0,
+    start: 0,
+    total: 0,
+  });
 
   const getConv = async (param: string) => {
     if (!accessToken) return;
     try {
       const data = await getConversations(accessToken, param);
       setConversations(data.data);
+      setConvPagination(data.meta);
     } catch (error) {
-      console.error("Failed to fetch files:", error);
+      console.error("Failed to fetch conversation:", error);
     }
   };
 
@@ -104,6 +105,8 @@ const DashboardHistory = () => {
           showModal={showInfoModal}
           onClick={closeInfoModal}
           conversations={conversations}
+          pagination={convPagination}
+          setPagination={setPagination}
         />
       )}
 

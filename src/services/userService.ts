@@ -54,3 +54,17 @@ export const createNewUser = async ({
     return error;
   }
 };
+
+export const deleteUser = async (token: string, userId: string) => {
+  try {
+    const response = await axiosInstance.delete(`/user/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    return error;
+  }
+};

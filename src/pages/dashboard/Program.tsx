@@ -6,25 +6,15 @@ import UpdateProgramModal from "../../components/modal/UpdateProgramModal";
 import SearchField from "../../components/Input/SearchField";
 import ProgramModal from "../../components/modal/ProgramModal";
 import { useAuth } from "../../contexts/AuthContext";
-import { getPrograms } from "../../services/programService";
+import { deleteProgram, getPrograms } from "../../services/programService";
 import type { IPagination } from "../../types/pagination";
 
 const DashboardProgram = () => {
-  // const items: ProgramItem[] = [
-  //   {
-  //     id: "a",
-  //     created_at: "2025-05-06 18:03:15.551948+00",
-  //     title: "Lomba masak",
-  //     description: "onlen",
-  //     start_date: "2025-04-21",
-  //     end_date: "2025-06-21",
-  //     type: "LOMBA",
-  //   },
-  // ];
-
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ProgramItem | null>(null);
+  const [selectedProgramId, setSelectedProgramId] = useState("");
 
   const openEditModal = (item: ProgramItem) => {
     setSelectedItem(item);
@@ -73,6 +63,21 @@ const DashboardProgram = () => {
     }
   }, [accessToken, pagination.limit, pagination.skip]);
 
+  const onDeleteProgram = async () => {
+    setLoading(false);
+    if (!accessToken) return;
+    if (selectedProgramId === "") return;
+    try {
+      await deleteProgram(accessToken, selectedProgramId);
+      await fetchPrograms();
+    } catch (error) {
+      console.error("Failed to delete program:", error);
+    }
+    setLoading(true);
+    setShowDeleteModal(false);
+    setSelectedProgramId("");
+  };
+
   useEffect(() => {
     fetchPrograms();
   }, [fetchPrograms]);
@@ -89,9 +94,10 @@ const DashboardProgram = () => {
 
       {selectedItem && showDeleteModal && (
         <DeleteModal
-          id={selectedItem.id}
-          onClick={closeDeleteModal}
+          onCancel={closeDeleteModal}
           value={showDeleteModal}
+          onConfirm={onDeleteProgram}
+          isLoading={loading}
         />
       )}
 
@@ -165,7 +171,10 @@ const DashboardProgram = () => {
                   </td>
                   <td
                     className="cursor-pointer px-0.5 py-4"
-                    onClick={() => openDeleteModal(item)}
+                    onClick={async () => {
+                      openDeleteModal(item);
+                      setSelectedProgramId(item.id);
+                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import type { FileItem } from "../../types/file";
-import { getFiles as fetchFiles } from "../../services/fileService";
+import { deleteFile, getFiles as fetchFiles } from "../../services/fileService";
 import FileModal from "../../components/modal/FileModal";
 import UpdateFileModal from "../../components/modal/UpdateFileModal";
 import DeleteModal from "../../components/modal/DeleteModal";
@@ -10,28 +10,11 @@ import SearchField from "../../components/Input/SearchField";
 import type { IPagination } from "../../types/pagination";
 
 const DashboardFile = () => {
-  // const files: FileItem[] = [
-  //   {
-  //     id: "55aab0e9-03bc-4c79-89a0-fcb613977c50",
-  //     file_name:
-  //       "55aab0e9-03bc-4c79-89a0-fcb613977c50_Daftar Dosen - Departemen Teknologi Informasi.pdf",
-  //     file_path: `F:\\project\\chatbot-ta\\chatbot-service\\data\\uploads\\55aab0e9-03bc-4c79-89a0-fcb613977c50_Daftar Dosen - Departemen Teknologi Informasi.pdf`,
-  //     status: "SUCCESS",
-  //     created_at: "2025-05-06 18:03:15.551948+00",
-  //     updated_at: "2025-05-06 18:03:30.603538+00",
-  //     user_id: "3434cf60-c944-4cb3-baa8-d66a5511e5cf",
-  //     meta: {
-  //       name: "Daftar Dosen - Departemen Teknologi Informasi.pdf",
-  //       content_type: "application/pdf",
-  //       size: 488280,
-  //       collection_name: "a",
-  //     },
-  //   },
-  // ];
-
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
+  const [selectedFileId, setSelectedFileId] = useState("");
 
   const openEditModal = (file: FileItem) => {
     setSelectedFile(file);
@@ -74,6 +57,21 @@ const DashboardFile = () => {
     }
   }, [accessToken, pagination.limit, pagination.skip]);
 
+  const onDeleteFile = async () => {
+    setLoading(false);
+    if (!accessToken) return;
+    if (selectedFileId === "") return;
+    try {
+      await deleteFile(accessToken, selectedFileId);
+      await getFiles();
+    } catch (error) {
+      console.error("Failed to delete user:", error);
+    }
+    setLoading(true);
+    setShowDeleteModal(false);
+    setSelectedFileId("");
+  };
+
   useEffect(() => {
     getFiles();
   }, [getFiles]);
@@ -106,7 +104,12 @@ const DashboardFile = () => {
         <FileModal refetchFiles={getFiles} />
       </div>
 
-      <DeleteModal id={"a"} onClick={openDeleteModal} value={showDeleteModal} />
+      <DeleteModal
+        onCancel={openDeleteModal}
+        value={showDeleteModal}
+        onConfirm={onDeleteFile}
+        isLoading={loading}
+      />
 
       {selectedFile && showEditModal && (
         <UpdateFileModal
@@ -183,7 +186,10 @@ const DashboardFile = () => {
                   </td>
                   <td
                     className="cursor-pointer px-0.5 py-4"
-                    onClick={openDeleteModal}
+                    onClick={async () => {
+                      openDeleteModal();
+                      setSelectedFileId(file.id);
+                    }}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"

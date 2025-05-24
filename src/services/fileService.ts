@@ -51,3 +51,20 @@ export const uploadFile = async ({
     throw error;
   }
 };
+
+export const deleteFile = async (token: string, fileId: string) => {
+  try {
+    const response = await axiosInstance.delete(
+      `/file/${fileId}?delete_file=true`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error) {
+    return error;
+  }
+};
