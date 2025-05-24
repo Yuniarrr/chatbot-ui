@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import type { FileItem } from "../../types/file";
 import { getFiles as fetchFiles } from "../../services/fileService";
@@ -59,24 +59,42 @@ const DashboardFile = () => {
     total: 0,
   });
 
-  useEffect(() => {
-    const getFiles = async () => {
-      if (!accessToken) return;
-      try {
-        const data = await fetchFiles(
-          accessToken,
-          pagination.skip,
-          pagination.limit,
-        );
-        setFiles(data.data);
-        setPagination(data.meta);
-      } catch (error) {
-        console.error("Failed to fetch files:", error);
-      }
-    };
-
-    getFiles();
+  const getFiles = useCallback(async () => {
+    if (!accessToken) return;
+    try {
+      const data = await fetchFiles(
+        accessToken,
+        pagination.skip,
+        pagination.limit,
+      );
+      setFiles(data.data);
+      setPagination(data.meta);
+    } catch (error) {
+      console.error("Failed to fetch files:", error);
+    }
   }, [accessToken, pagination.limit, pagination.skip]);
+
+  useEffect(() => {
+    getFiles();
+  }, [getFiles]);
+
+  const renderFileStatus = (status: string) => {
+    switch (status) {
+      case "AWAITING":
+        return (
+          <td className="px-6 py-4 font-semibold text-gray-400">Proses</td>
+        );
+      case "SUCCESS":
+        return (
+          <td className="px-6 py-4 font-semibold text-green-400">Sukses</td>
+        );
+      case "FAILED":
+        return <td className="px-6 py-4 font-semibold text-red-400">Gagal</td>;
+
+      default:
+        break;
+    }
+  };
 
   return (
     <div className="flex w-full flex-col gap-y-3">
@@ -85,7 +103,7 @@ const DashboardFile = () => {
       <div className="flex max-w-fit flex-col gap-y-3 overflow-x-hidden sm:max-w-full sm:flex-row sm:justify-between sm:gap-y-0">
         <SearchField />
 
-        <FileModal />
+        <FileModal refetchFiles={getFiles} />
       </div>
 
       <DeleteModal id={"a"} onClick={openDeleteModal} value={showDeleteModal} />
@@ -141,7 +159,8 @@ const DashboardFile = () => {
                   <td className="px-6 py-4 hover:cursor-pointer hover:underline">
                     {file.meta.name}
                   </td>
-                  <td className="px-6 py-4">{file.status}</td>
+                  {/* <td className="px-6 py-4">{file.status}</td> */}
+                  {renderFileStatus(file.status)}
                   <td className="px-6 py-4">{file.meta.collection_name}</td>
                   <td
                     className="cursor-pointer px-0.5 py-4"

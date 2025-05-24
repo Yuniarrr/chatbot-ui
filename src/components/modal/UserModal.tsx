@@ -37,8 +37,13 @@ const UserModal: React.FC<UserModalProps> = ({ refetchUsers }) => {
       });
       await refetchUsers();
     } catch (error) {
-      console.error("Failed to fetch programs:", error);
+      console.error("Failed to fetch new user:", error);
     }
+    setNamaLengkap("");
+    setEmail("");
+    setNomorTelepon("");
+    setRole("USER");
+    setPassword("");
     setShowModal(false);
     setLoading(false);
   };
