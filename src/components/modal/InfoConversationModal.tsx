@@ -6,22 +6,24 @@ import { useNavigate } from "react-router-dom";
 interface InfoConversationModalProps {
   showModal: boolean;
   onClick: () => void;
+  conversations: ConversationItem[];
 }
 
 const InfoConversationModal: React.FC<InfoConversationModalProps> = ({
   showModal,
   onClick,
+  conversations,
 }) => {
-  const items: ConversationItem[] = [
-    {
-      id: "a",
-      title: "hai",
-      sender: "wa",
-      user_id: "a",
-      created_at: "2025-05-06 18:03:15.551948+00",
-      updated_at: null,
-    },
-  ];
+  // const items: ConversationItem[] = [
+  //   {
+  //     id: "a",
+  //     title: "hai",
+  //     sender: "wa",
+  //     user_id: "a",
+  //     created_at: "2025-05-06 18:03:15.551948+00",
+  //     updated_at: null,
+  //   },
+  // ];
 
   const navigate = useNavigate();
 
@@ -90,7 +92,7 @@ const InfoConversationModal: React.FC<InfoConversationModalProps> = ({
                 </tr>
               </thead>
               <tbody>
-                {items.map((item, index) => (
+                {conversations.map((item, index) => (
                   <tr className="border-b border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
                     <th
                       scope="row"

@@ -30,7 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onClick, showSidebar }) => {
             className={`block w-full rounded-md px-2 py-1 hover:bg-blue-400 ${isActive("/dashboard/koleksi") ? "bg-blue-400" : ""}`}
             onClick={onClick}
           >
-            Koleksi
+            Jenis Dokumen
           </Link>
           <Link
             to="/dashboard/file"

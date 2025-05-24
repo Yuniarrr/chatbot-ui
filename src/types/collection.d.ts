@@ -1,7 +1,8 @@
 export interface CollectionItem {
   id: string;
-  collection_name: string;
-  collection_status: string;
+  name: string;
+  description: string;
+  is_active: boolean;
   created_at: string;
   updated_at?: string | null;
 }

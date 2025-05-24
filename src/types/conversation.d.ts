@@ -10,11 +10,12 @@ export interface ConversationItem {
 export interface ListUniqueConversationItem {
   user_id?: string | null;
   sender?: string | null;
+  full_name?: string | null;
 }
 
 export interface MessageItem {
   id: string;
   message: string;
   created_at: string;
-  type: string;
+  from_message: string;
 }

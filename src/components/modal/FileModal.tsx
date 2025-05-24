@@ -1,28 +1,104 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InputField from "../Input/InputField";
 import type { CollectionItem } from "../../types/collection";
+import { useAuth } from "../../contexts/AuthContext";
+import { getCollections } from "../../services/collectionService";
 
 // interface
 
 const FileModal = () => {
   const [showModal, setShowModal] = useState(false);
 
-  const items: CollectionItem[] = [
-    {
-      id: "a",
-      collection_name: "administration",
-      collection_status: "ACTIVE",
-      created_at: "2025-05-06 18:03:15.551948+00",
-    },
-  ];
-
-  const listDropdown = items.map((item) => ({
-    key: item.collection_name,
-    value: item.collection_name,
-  }));
-
   const modalUploadFile = () => {
     setShowModal(!showModal);
+  };
+
+  const { accessToken } = useAuth();
+  const [collections, setCollections] = useState<CollectionItem[]>([]);
+  const [listDropdown, setListDropdown] = useState([]);
+  const [tipeDoc, setTipeDoc] = useState("file");
+  const [file, setFile] = useState<File | null>(null);
+  const [url, setUrl] = useState("");
+  const [text, setText] = useState("");
+
+  console.log("tipeDoc");
+  console.log(tipeDoc);
+
+  useEffect(() => {
+    const fetchCollection = async () => {
+      if (!accessToken) return;
+      try {
+        const data = await getCollections(accessToken);
+        setCollections(data.data);
+        const list = data.data.map((item: CollectionItem) => ({
+          key: item.name,
+          value: item.name,
+        }));
+        setListDropdown(list);
+      } catch (error) {
+        console.error("Failed to fetch files:", error);
+      }
+    };
+
+    fetchCollection();
+  }, [accessToken]);
+
+  const renderBasedOnTipeDokumen = () => {
+    switch (tipeDoc) {
+      case "file":
+        return (
+          <InputField
+            label="File"
+            id="fileUpload"
+            type="file"
+            value={""}
+            onChange={(e) => {
+              if (e && "target" in e) {
+                const target = e.target as HTMLInputElement;
+                if (target.files?.[0]) {
+                  setFile(target.files[0]);
+                }
+              }
+            }}
+            placeholder="Tambahkan file"
+          />
+        );
+
+      case "url":
+        return (
+          <InputField
+            label="URL"
+            id="urlInput"
+            value={url}
+            onChange={(e) => {
+              if (e && "target" in e) {
+                setUrl((e.target as HTMLInputElement).value);
+              }
+            }}
+            placeholder="Masukkan URL dokumen"
+          />
+        );
+
+      case "teks":
+        return (
+          <InputField
+            label="Teks"
+            id="textInput"
+            isTextarea={true}
+            isBase={false}
+            value={text}
+            onChange={(e) => {
+              if (e && "target" in e) {
+                setText((e.target as HTMLTextAreaElement).value);
+              }
+            }}
+            placeholder="Masukkan isi teks dokumen"
+          />
+        );
+
+      default:
+        return null;
+    }
   };
 
   return (
@@ -99,24 +175,36 @@ const FileModal = () => {
             <div className="p-4 md:p-5">
               <form className="space-y-4" action="#">
                 <InputField
-                  label="Nama Koleksi / Folder"
+                  label="Jenis Dokumen"
                   id="collectionName"
                   value={"administration"}
                   //   onChange={(e) => setName(e.target.value)}
-                  placeholder="Masukkan koleksi / folder"
+                  placeholder="Masukkan Jenis Dokumen"
                   isDropdown={true}
                   isBase={false}
                   listDropdown={listDropdown}
-                  name="koleksi"
+                  name="jenis dokumen"
                 />
                 <InputField
-                  label="File"
-                  id="fileUpload"
-                  type="file"
-                  value={""}
-                  //   onChange={(e) => setName(e.target.value)}
-                  placeholder="Tambahkan file"
+                  label="Tipe Dokumen"
+                  id="tipeDokumen"
+                  value={tipeDoc}
+                  onChange={(e) => {
+                    if (e && "target" in e) {
+                      setTipeDoc((e.target as HTMLInputElement).value);
+                    }
+                  }}
+                  placeholder="Masukkan tipe dokumen"
+                  isDropdown={true}
+                  isBase={false}
+                  listDropdown={[
+                    { key: "file", value: "file" },
+                    { key: "url", value: "url" },
+                    { key: "teks", value: "teks" },
+                  ]}
+                  name="jenis dokumen"
                 />
+                {renderBasedOnTipeDokumen()}
                 <button
                   type="submit"
                   className="w-full cursor-pointer rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

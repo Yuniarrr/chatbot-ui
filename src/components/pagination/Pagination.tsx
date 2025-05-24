@@ -1,17 +1,49 @@
-const Pagination = () => {
+import React from "react";
+import type { IPagination } from "../../types/pagination";
+
+interface PaginationProps {
+  pagination: IPagination;
+  onPageChange: (newSkip: number) => void;
+}
+
+const Pagination: React.FC<PaginationProps> = ({
+  pagination,
+  onPageChange,
+}) => {
+  const handlePrev = () => {
+    if (pagination.is_prev) {
+      onPageChange(Math.max(pagination.skip - pagination.limit, 0));
+    }
+  };
+
+  const handleNext = () => {
+    if (pagination.is_next) {
+      onPageChange(pagination.skip + pagination.limit);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center">
       <span className="text-sm text-gray-700 dark:text-gray-400">
         Showing{" "}
-        <span className="font-semibold text-gray-900 dark:text-white">1</span>{" "}
+        <span className="font-semibold text-gray-900 dark:text-white">
+          {pagination.start}
+        </span>{" "}
         to{" "}
-        <span className="font-semibold text-gray-900 dark:text-white">10</span>{" "}
+        <span className="font-semibold text-gray-900 dark:text-white">
+          {pagination.end}
+        </span>{" "}
         of{" "}
-        <span className="font-semibold text-gray-900 dark:text-white">100</span>{" "}
+        <span className="font-semibold text-gray-900 dark:text-white">
+          {pagination.total}
+        </span>{" "}
         Entries
       </span>
       <div className="xs:mt-0 mt-2 inline-flex">
-        <button className="flex h-8 cursor-pointer items-center justify-center rounded-s bg-gray-600 px-3 text-sm font-medium text-white hover:bg-gray-900 dark:border-gray-700 dark:bg-gray-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+        <button
+          onClick={handlePrev}
+          className={`flex h-8 items-center justify-center rounded-s px-3 text-sm font-medium text-white dark:border-gray-700 dark:bg-gray-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${pagination.is_prev ? "cursor-pointer bg-gray-600 hover:bg-gray-900" : "cursor-not-allowed bg-gray-400"}`}
+        >
           <svg
             className="me-2 h-3.5 w-3.5 rtl:rotate-180"
             aria-hidden="true"
@@ -29,7 +61,10 @@ const Pagination = () => {
           </svg>
           Prev
         </button>
-        <button className="flex h-8 cursor-pointer items-center justify-center rounded-e border-0 border-s border-gray-700 bg-gray-600 px-3 text-sm font-medium text-white hover:bg-gray-900 dark:border-gray-700 dark:bg-gray-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+        <button
+          onClick={handleNext}
+          className={`flex h-8 items-center justify-center rounded-e border-0 border-s border-gray-700 px-3 text-sm font-medium text-white dark:border-gray-700 dark:bg-gray-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${pagination.is_next ? "cursor-pointer bg-gray-600 hover:bg-gray-900" : "cursor-not-allowed bg-gray-400"}`}
+        >
           Next
           <svg
             className="ms-2 h-3.5 w-3.5 rtl:rotate-180"

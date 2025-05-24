@@ -1,25 +1,30 @@
 import { useParams } from "react-router-dom";
 import type { MessageItem } from "../../../types/conversation";
 import formatTime from "../../../utils/formatTime";
+import { useAuth } from "../../../contexts/AuthContext";
+import { useEffect, useState } from "react";
+import { getMessages } from "../../../services/conversationService";
+import Markdown from "react-markdown";
 
 const ConversationDetail = () => {
   const { id } = useParams();
 
-  const items: MessageItem[] = [
-    {
-      id: "1",
-      created_at: "2025-05-06 18:03:15.551948+00",
-      message:
-        "hai ai aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      type: "user",
-    },
-    {
-      id: "2",
-      created_at: "2025-05-06 18:03:15.551948+00",
-      message: "yoo",
-      type: "ai",
-    },
-  ];
+  const { accessToken } = useAuth();
+  const [items, setFiles] = useState<MessageItem[]>([]);
+
+  useEffect(() => {
+    const getFiles = async () => {
+      if (!accessToken || !id) return;
+      try {
+        const data = await getMessages(accessToken, id);
+        setFiles(data.data);
+      } catch (error) {
+        console.error("Failed to fetch files:", error);
+      }
+    };
+
+    getFiles();
+  }, [accessToken, id]);
 
   return (
     <div className="flex w-full flex-col gap-y-3">
@@ -27,14 +32,9 @@ const ConversationDetail = () => {
 
       <div className="">
         <div className="max-h-[80vh] w-full gap-y-3 overflow-y-auto bg-gray-50 p-4 shadow-md sm:rounded-lg">
-          {/* {Array(5)
-            .fill(null)
-            .flatMap(() => items)
-            .reverse()
-            .map((item, index) => ( */}
-          {[...items].reverse().map((item, index) => (
+          {[...items].map((item, index) => (
             <div className="mb-3 w-full px-5">
-              {item.type === "ai" && (
+              {item.from_message === "BOT" && (
                 <div
                   className="flex w-full items-start gap-2.5"
                   id={index.toString()}
@@ -47,20 +47,20 @@ const ConversationDetail = () => {
                   <div className="flex w-fit flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4 leading-1.5 dark:bg-gray-700">
                     <div className="flex items-center space-x-2 rtl:space-x-reverse">
                       <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                        {item.type}
+                        {item.from_message === "BOT" ? "CATI" : "USER"}
                       </span>
                       <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
                         {formatTime(item.created_at)}
                       </span>
                     </div>
                     <p className="py-2.5 text-sm font-normal break-all text-gray-900 dark:text-white">
-                      {item.message}
+                      <Markdown>{item.message}</Markdown>
                     </p>
                   </div>
                 </div>
               )}
 
-              {item.type === "user" && (
+              {item.from_message === "USER" && (
                 <div
                   className="flex w-full items-start justify-end gap-2.5"
                   id={index.toString()}
@@ -68,14 +68,14 @@ const ConversationDetail = () => {
                   <div className="flex w-fit flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4 leading-1.5 dark:bg-gray-700">
                     <div className="flex items-center space-x-2 rtl:space-x-reverse">
                       <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                        {item.type}
+                        {item.from_message === "USER" ? "USER" : "CATI"}
                       </span>
                       <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
                         {formatTime(item.created_at)}
                       </span>
                     </div>
                     <p className="block w-full py-2.5 text-sm font-normal break-all text-gray-900 dark:text-white">
-                      {item.message}
+                      <Markdown>{item.message}</Markdown>
                     </p>
                   </div>
                   <img

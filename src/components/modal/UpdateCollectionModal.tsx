@@ -59,21 +59,21 @@ const UpdateCollectionModal: React.FC<UpdateCollectionModalProps> = ({
               <InputField
                 label="Nama Koleksi"
                 id="collectionName"
-                value={collection.collection_name}
+                value={collection.name}
                 //   onChange={(e) => setName(e.target.value)}
                 placeholder="Masukkan nama koleksi"
               />
               <InputField
                 label="Status"
                 id="status"
-                value={collection.collection_status}
+                value={collection.is_active ? "AKTIF" : "NON-AKTIF"}
                 isDropdown={true}
                 isBase={false}
                 //   onChange={(e) => setName(e.target.value)}
                 placeholder="Pilih status"
                 listDropdown={[
-                  { key: "Aktif", value: "ACTIVE" },
-                  { key: "Non-Aktif", value: "NON-ACTIVE" },
+                  { key: "Aktif", value: "AKTIF" },
+                  { key: "Non-Aktif", value: "NON-AKTIF" },
                 ]}
               />
               <button

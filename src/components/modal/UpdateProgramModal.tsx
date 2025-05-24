@@ -102,6 +102,7 @@ const UpdateProgramModal: React.FC<UpdateProgramModalProps> = ({
                   { key: "Magang", value: "MAGANG" },
                   { key: "Lomba", value: "LOMBA" },
                   { key: "Sertifikasi", value: "SERTIFIKASI" },
+                  { key: "Seminar", value: "SEMINAR" },
                 ]}
               />
               <InputField
