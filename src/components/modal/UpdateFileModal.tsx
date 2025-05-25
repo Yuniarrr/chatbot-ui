@@ -63,8 +63,11 @@ const UpdateFileModal: React.FC<UpdateFileModalProps> = ({
       file_name: file.file_name,
     };
 
-    if (namaFile !== file.meta.name.replace(/\.[^/.]+$/, ""))
+    if (namaFile !== file.meta.name.replace(/\.[^/.]+$/, "")) {
       payload.file_name = `${file.id}_${namaFile}.${file.meta.name.split(".").pop()}`;
+      payload.meta.name = `${namaFile}.${file.meta.name.split(".").pop()}`;
+    }
+
     if (selectedCollection !== file.meta.collection_name)
       payload.meta.collection_name = selectedCollection;
 
@@ -77,11 +80,11 @@ const UpdateFileModal: React.FC<UpdateFileModalProps> = ({
 
     try {
       console.log(payload);
-      // await updateFile({
-      //   token: accessToken,
-      //   payload,
-      //   file_id: file.id,
-      // });
+      await updateFile({
+        token: accessToken,
+        payload,
+        file_id: file.id,
+      });
       await refetchFile();
     } catch (error) {
       console.error("Failed to update files:", error);

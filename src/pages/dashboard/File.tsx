@@ -58,7 +58,7 @@ const DashboardFile = () => {
   }, [accessToken, pagination.limit, pagination.skip]);
 
   const onDeleteFile = async () => {
-    setLoading(false);
+    setLoading(true);
     if (!accessToken) return;
     if (selectedFileId === "") return;
     try {
@@ -67,7 +67,7 @@ const DashboardFile = () => {
     } catch (error) {
       console.error("Failed to delete user:", error);
     }
-    setLoading(true);
+    setLoading(false);
     setShowDeleteModal(false);
     setSelectedFileId("");
   };
@@ -160,10 +160,17 @@ const DashboardFile = () => {
                   >
                     {index + 1 + pagination.skip}
                   </th>
-                  <td className="px-6 py-4 hover:cursor-pointer hover:underline">
+                  <td
+                    className="px-6 py-4 hover:cursor-pointer hover:underline"
+                    onClick={() =>
+                      window.open(
+                        `${file.meta.name.startsWith("https") ? file.meta.name : `http://localhost:8080/api/v1/dev/uploads/${file.file_name}`}`,
+                        "_blank",
+                      )
+                    }
+                  >
                     {file.meta.name}
                   </td>
-                  {/* <td className="px-6 py-4">{file.status}</td> */}
                   {renderFileStatus(file.status)}
                   <td className="px-6 py-4">{file.meta.collection_name}</td>
                   <td

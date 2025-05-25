@@ -6,7 +6,7 @@ interface SidebarProps {
   onClick: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ onClick, showSidebar }) => {
+const Sidebar: React.FC<SidebarProps> = ({ onClick }) => {
   const { logout } = useAuth();
 
   const location = useLocation();
