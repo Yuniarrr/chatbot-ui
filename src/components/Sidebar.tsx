@@ -39,18 +39,19 @@ const Sidebar: React.FC<SidebarProps> = ({ onClick, showSidebar }) => {
           >
             File
           </Link>
-          {/* <Link
-            to="/dashboard/tool"
-            className={`block w-full rounded-md px-2 py-1 hover:bg-blue-400 ${isActive("/dashboard/tool") ? "bg-blue-400" : ""}`}
-          >
-            Tool
-          </Link> */}
           <Link
             to="/dashboard/program"
             className={`block w-full rounded-md px-2 py-1 hover:bg-blue-400 ${isActive("/dashboard/program") ? "bg-blue-400" : ""}`}
             onClick={onClick}
           >
             Program
+          </Link>
+          <Link
+            to="/dashboard/feedback"
+            className={`block w-full rounded-md px-2 py-1 hover:bg-blue-400 ${isActive("/dashboard/feedback") ? "bg-blue-400" : ""}`}
+            onClick={onClick}
+          >
+            Umpan Balik
           </Link>
           <Link
             to="/dashboard/history"

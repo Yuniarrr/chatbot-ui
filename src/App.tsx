@@ -10,6 +10,7 @@ import DashboardHistory from "./pages/dashboard/History";
 import ConversationDetail from "./pages/dashboard/History/ConversationDetail";
 import DashboardCollection from "./pages/dashboard/Collection";
 import DashboardProgram from "./pages/dashboard/Program";
+import DashboardFeedback from "./pages/dashboard/Feedback";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
               <Route path="history" element={<DashboardHistory />} />
               <Route path="koleksi" element={<DashboardCollection />} />
               <Route path="program" element={<DashboardProgram />} />
+              <Route path="feedback" element={<DashboardFeedback />} />
               <Route path="history/:id" element={<ConversationDetail />} />
             </Route>
           </Route>

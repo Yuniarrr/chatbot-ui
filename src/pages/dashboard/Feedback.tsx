@@ -1,44 +1,30 @@
 import { useCallback, useEffect, useState } from "react";
-import DeleteModal from "../../components/modal/DeleteModal";
-import type { ListUniqueConversationItem } from "../../types/conversation";
-import InfoConversationModal from "../../components/modal/InfoConversationModal";
 import Pagination from "../../components/pagination/Pagination";
+import DeleteModal from "../../components/modal/DeleteModal";
 import SearchField from "../../components/Input/SearchField";
 import { useAuth } from "../../contexts/AuthContext";
-import {
-  getSenderConversation,
-  deleteConversationBySender,
-} from "../../services/conversationService";
 import type { IPagination } from "../../types/pagination";
+import type { FeedbackItem } from "../../types/feedback";
+import { deleteFeedback, getFeedbacks } from "../../services/feedbackService";
 
-const DashboardHistory = () => {
+const DashboardFeedback = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showInfoModal, setShowInfoModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [selectedSender, setSelectedSender] = useState("");
-  const [selectedUser, setSelectedUser] =
-    useState<ListUniqueConversationItem | null>(null);
+  const [selectedItem, setSelectedItem] = useState<FeedbackItem | null>(null);
+  const [selectedFeedbackId, setSelectedFeedbackId] = useState("");
 
-  const openInfoModal = async (info: ListUniqueConversationItem) => {
-    setSelectedUser(info);
-    setShowInfoModal(true);
+  const openDeleteModal = (item: FeedbackItem) => {
+    setSelectedItem(item);
+    setShowDeleteModal(true);
   };
 
-  const closeInfoModal = () => {
-    setLoading(false);
-    setShowInfoModal(false);
-    setSelectedUser(null);
-  };
-
-  const openDeleteModal = () => {
-    setShowDeleteModal(!showDeleteModal);
-    setLoading(false);
+  const closeDeleteModal = () => {
+    setSelectedItem(null);
+    setShowDeleteModal(false);
   };
 
   const { accessToken } = useAuth();
-  const [listConversations, setListConversations] = useState<
-    ListUniqueConversationItem[]
-  >([]);
+  const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>([]);
   const [pagination, setPagination] = useState<IPagination>({
     end: 0,
     is_next: false,
@@ -49,70 +35,64 @@ const DashboardHistory = () => {
     total: 0,
   });
 
-  const fetchConversations = useCallback(async () => {
+  const fetchFeedbacks = useCallback(async () => {
     if (!accessToken) return;
     try {
-      const data = await getSenderConversation(
+      const data = await getFeedbacks(
         accessToken,
         pagination.skip,
         pagination.limit,
       );
-      setListConversations(data.data);
+      setFeedbacks(data.data);
       setPagination(data.meta);
     } catch (error) {
-      console.error("Failed to fetch files:", error);
+      console.error("Failed to fetch programs:", error);
     }
   }, [accessToken, pagination.limit, pagination.skip]);
 
-  const onDeleteBySender = async () => {
-    setLoading(true);
-    if (!accessToken) return;
-    if (selectedSender === "") return;
-    try {
-      await deleteConversationBySender(accessToken, selectedSender);
-      await fetchConversations();
-    } catch (error) {
-      console.error("Failed to delete sender:", error);
-    }
+  const onDeleteFeedback = async () => {
     setLoading(false);
+    if (!accessToken) return;
+    if (selectedFeedbackId === "") return;
+    try {
+      await deleteFeedback(accessToken, selectedFeedbackId);
+      await fetchFeedbacks();
+    } catch (error) {
+      console.error("Failed to delete program:", error);
+    }
+    setLoading(true);
     setShowDeleteModal(false);
-    setSelectedSender("");
+    setSelectedFeedbackId("");
   };
 
   useEffect(() => {
-    fetchConversations();
-  }, [fetchConversations]);
+    fetchFeedbacks();
+  }, [fetchFeedbacks]);
 
   return (
     <div className="flex w-full flex-col gap-y-3">
-      <h2 className="text-2xl font-semibold">Riwayat</h2>
+      <h2 className="text-2xl font-semibold">Dashboard Umpan Balik</h2>
 
       <div className="flex max-w-fit flex-col gap-y-3 overflow-x-hidden sm:max-w-full sm:flex-row sm:justify-between sm:gap-y-0">
         <SearchField />
       </div>
 
-      <DeleteModal
-        onCancel={openDeleteModal}
-        value={showDeleteModal}
-        onConfirm={onDeleteBySender}
-        isLoading={loading}
-      />
-
-      {selectedUser && showInfoModal && (
-        <InfoConversationModal
-          showModal={showInfoModal}
-          onClick={closeInfoModal}
-          sender={selectedUser?.sender || selectedUser?.user_id || ""}
+      {selectedItem && showDeleteModal && (
+        <DeleteModal
+          onCancel={closeDeleteModal}
+          value={showDeleteModal}
+          onConfirm={onDeleteFeedback}
+          isLoading={loading}
         />
       )}
 
-      {listConversations.length === 0 && (
+      {feedbacks.length === 0 && (
         <div>
           <p>Tidak ada data</p>
         </div>
       )}
 
-      {listConversations.length !== 0 && (
+      {feedbacks.length !== 0 && (
         <div className="relative max-w-fit overflow-x-auto shadow-md sm:max-w-full sm:rounded-lg">
           <table className="w-full min-w-[600px] text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
             <thead className="bg-gray-100 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
@@ -124,7 +104,10 @@ const DashboardHistory = () => {
                   Pengirim
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  <span className="sr-only">Edit</span>
+                  Jenis
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  Pesan
                 </th>
                 <th scope="col" className="px-6 py-3">
                   <span className="sr-only">Delete</span>
@@ -132,7 +115,7 @@ const DashboardHistory = () => {
               </tr>
             </thead>
             <tbody>
-              {listConversations.map((item, index) => (
+              {feedbacks.map((item, index) => (
                 <tr className="border-b border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
                   <th
                     scope="row"
@@ -140,33 +123,20 @@ const DashboardHistory = () => {
                   >
                     {index + 1 + pagination.skip}
                   </th>
-                  <td className="px-6 py-4">{item.sender || item.full_name}</td>
+                  <td className="px-6 py-4 hover:cursor-pointer hover:underline">
+                    {item.sender}
+                  </td>
+                  <td
+                    className={`px-6 py-4 font-semibold ${item.type === "POSITIVE" ? "text-green-400" : "text-red-400"}`}
+                  >
+                    {item.type === "POSITIVE" ? "Positif" : "Negatif"}
+                  </td>
+                  <td className="px-6 py-4">{item.message}</td>
                   <td
                     className="cursor-pointer px-0.5 py-4"
                     onClick={async () => {
-                      await openInfoModal(item);
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      className="size-6"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                      />
-                    </svg>
-                  </td>
-                  <td
-                    className="cursor-pointer px-0.5 py-4"
-                    onClick={() => {
-                      openDeleteModal();
-                      setSelectedSender(item.sender || item.user_id || "");
+                      openDeleteModal(item);
+                      setSelectedFeedbackId(item.id);
                     }}
                   >
                     <svg
@@ -204,4 +174,4 @@ const DashboardHistory = () => {
   );
 };
 
-export default DashboardHistory;
+export default DashboardFeedback;
