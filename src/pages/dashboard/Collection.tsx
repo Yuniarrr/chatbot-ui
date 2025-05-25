@@ -1,29 +1,14 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { CollectionItem } from "../../types/collection";
-import DeleteModal from "../../components/modal/DeleteModal";
 import UpdateCollectionModal from "../../components/modal/UpdateCollectionModal";
 import SearchField from "../../components/Input/SearchField";
 import { getCollections } from "../../services/collectionService";
 import { useAuth } from "../../contexts/AuthContext";
 
 const DashboardCollection = () => {
-  // const items: CollectionItem[] = [
-  //   {
-  //     id: "a",
-  //     collection_name: "administration",
-  //     collection_status: "ACTIVE",
-  //     created_at: "2025-05-06 18:03:15.551948+00",
-  //   },
-  // ];
-
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedCollection, setSelectedCollection] =
     useState<CollectionItem | null>(null);
-
-  const openDeleteModal = () => {
-    setShowDeleteModal(!showDeleteModal);
-  };
 
   const openEditModal = (user: CollectionItem) => {
     setSelectedCollection(user);
@@ -38,19 +23,19 @@ const DashboardCollection = () => {
   const { accessToken } = useAuth();
   const [collections, setCollections] = useState<CollectionItem[]>([]);
 
-  useEffect(() => {
-    const fetchCollection = async () => {
-      if (!accessToken) return;
-      try {
-        const data = await getCollections(accessToken);
-        setCollections(data.data);
-      } catch (error) {
-        console.error("Failed to fetch files:", error);
-      }
-    };
-
-    fetchCollection();
+  const fetchCollection = useCallback(async () => {
+    if (!accessToken) return;
+    try {
+      const data = await getCollections(accessToken);
+      setCollections(data.data);
+    } catch (error) {
+      console.error("Failed to fetch files:", error);
+    }
   }, [accessToken]);
+
+  useEffect(() => {
+    fetchCollection();
+  }, [fetchCollection]);
 
   return (
     <div className="flex w-full flex-col gap-y-3">
@@ -62,13 +47,12 @@ const DashboardCollection = () => {
         {/* <UserModal /> */}
       </div>
 
-      <DeleteModal id={"a"} onClick={openDeleteModal} value={showDeleteModal} />
-
       {selectedCollection && showEditModal && (
         <UpdateCollectionModal
           showModal={showEditModal}
           collection={selectedCollection}
           onClick={closeEditModal}
+          refetchCollection={fetchCollection}
         />
       )}
 
