@@ -12,8 +12,8 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ refetchPrograms }) => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const [startDate, setStartDate] = useState<Date>(new Date());
-  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   const [namaProgram, setNamaProgram] = useState("");
   const [deskripsiProgram, setDeskripsiProgram] = useState("");
@@ -27,19 +27,19 @@ const ProgramModal: React.FC<ProgramModalProps> = ({ refetchPrograms }) => {
   };
 
   const fetchNewProgram = async () => {
-    console.log(startDate.toISOString().split("T")[0]);
-    console.log(endDate.toISOString().split("T")[0]);
     setLoading(true);
     if (!accessToken) return;
     try {
+      console.log("startDate");
+      console.log(startDate);
       await addNewProgram({
         token: accessToken,
         description: deskripsiProgram,
-        end_date: endDate.toISOString().split("T")[0],
+        end_date: endDate ? endDate.toISOString().split("T")[0] : null,
         image_url: imageProgram,
         link: urlProgram,
         organizer: penyelenggaraProgram,
-        start_date: startDate.toISOString().split("T")[0],
+        start_date: startDate ? startDate.toISOString().split("T")[0] : null,
         title: namaProgram,
         type: jenisProgram,
       });

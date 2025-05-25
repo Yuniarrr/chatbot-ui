@@ -1,3 +1,4 @@
+import type { IUpdateFile } from "../types/file";
 import axiosInstance from "../utils/axiosInstance";
 
 export const getFiles = async (token: string, skip = 0, limit = 10) => {
@@ -64,6 +65,34 @@ export const deleteFile = async (token: string, fileId: string) => {
     );
 
     return response.data;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const updateFile = async ({
+  token,
+  file_id,
+  payload,
+}: {
+  token: string;
+  payload: IUpdateFile;
+  file_id: string;
+}) => {
+  try {
+    const response = await axiosInstance.patch(
+      `/file/${file_id}`,
+      {
+        ...payload,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    return response.data.data;
   } catch (error) {
     return error;
   }

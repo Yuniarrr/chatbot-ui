@@ -106,6 +106,7 @@ const DashboardProgram = () => {
           showModal={showEditModal}
           program={selectedItem}
           onClick={closeEditModal}
+          refetchPrograms={fetchPrograms}
         />
       )}
 

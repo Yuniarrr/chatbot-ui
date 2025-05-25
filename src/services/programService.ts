@@ -1,3 +1,4 @@
+import type { IUpdateProgram } from "../types/program";
 import axiosInstance from "../utils/axiosInstance";
 
 export const getPrograms = async (token: string, skip = 0, limit = 10) => {
@@ -29,8 +30,8 @@ export const addNewProgram = async ({
   description: string;
   organizer: string;
   type: string;
-  start_date: string | Date;
-  end_date: string | Date;
+  start_date: string | Date | null;
+  end_date: string | Date | null;
   link: string;
   image_url: string;
 }) => {
@@ -64,4 +65,32 @@ export const deleteProgram = async (token: string, programId: string) => {
   });
 
   return response.data;
+};
+
+export const updateProgram = async ({
+  token,
+  programId,
+  payload,
+}: {
+  token: string;
+  payload: IUpdateProgram;
+  programId: string;
+}) => {
+  try {
+    const response = await axiosInstance.patch(
+      `/opportunity/${programId}`,
+      {
+        ...payload,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error) {
+    return error;
+  }
 };

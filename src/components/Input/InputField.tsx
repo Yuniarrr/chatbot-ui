@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -7,7 +7,7 @@ interface InputFieldProps {
   label: string;
   id: string;
   name?: string;
-  value: string | Date;
+  value: string | Date | null;
   onChange?: (
     e:
       | React.ChangeEvent<
@@ -91,7 +91,9 @@ const InputField: React.FC<InputFieldProps> = ({
       {isDate && (
         <DatePicker
           className={`block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400 ${disabled ? "text-gray-400" : "text-gray-900"}`}
-          selected={value ? new Date(value) : null}
+          selected={
+            value && !isNaN(new Date(value).getTime()) ? new Date(value) : null
+          }
           onChange={(date) => onChange?.(date)}
           placeholderText={placeholder}
           dateFormat="dd/MM/yyyy"

@@ -13,3 +13,13 @@ export interface FileItem {
     collection_name: string;
   };
 }
+
+export interface IUpdateFile {
+  file_name?: string;
+  meta: {
+    name: string;
+    content_type: string;
+    size: number;
+    collection_name: string;
+  };
+}

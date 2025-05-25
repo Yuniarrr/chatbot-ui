@@ -116,6 +116,7 @@ const DashboardFile = () => {
           showModal={showEditModal}
           file={selectedFile}
           onClick={closeEditModal}
+          refetchFile={getFiles}
         />
       )}
 
