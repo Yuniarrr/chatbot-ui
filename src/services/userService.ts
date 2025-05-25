@@ -29,6 +29,20 @@ export const getUsers = async ({
   }
 };
 
+export const getMe = async ({ token }: { token: string }) => {
+  try {
+    const response = await axiosInstance.get(`/user/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data.data;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const createNewUser = async ({
   token,
   full_name,

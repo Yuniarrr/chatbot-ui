@@ -1,5 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { useCallback, useEffect, useState } from "react";
+import { getMe } from "../services/userService";
+import type { UserItem } from "../types/user";
 
 interface SidebarProps {
   showSidebar: boolean;
@@ -7,11 +10,30 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ onClick }) => {
-  const { logout } = useAuth();
+  const { logout, accessToken } = useAuth();
+  const [user, setUser] = useState<UserItem>({});
 
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
+
+  const fetchUserMe = useCallback(async () => {
+    if (!accessToken) return;
+    try {
+      const data = await getMe({
+        token: accessToken,
+      });
+      console.log("data");
+      console.log(data);
+      setUser(data);
+    } catch (error) {
+      console.error("Failed to fetch programs:", error);
+    }
+  }, [accessToken]);
+
+  useEffect(() => {
+    fetchUserMe();
+  }, [fetchUserMe]);
 
   return (
     <div className="flex h-screen w-full flex-col justify-between bg-blue-300 px-5 py-6">
@@ -63,6 +85,9 @@ const Sidebar: React.FC<SidebarProps> = ({ onClick }) => {
         </div>
       </div>
       <div>
+        <div className="flex w-full cursor-pointer flex-row items-center justify-center rounded-md p-2 hover:bg-blue-400">
+          Pengguna : {user.full_name}
+        </div>
         <button
           className="flex w-full cursor-pointer flex-row items-center justify-center gap-x-2 rounded-md p-2 hover:bg-blue-400"
           onClick={() => {
