@@ -1,14 +1,25 @@
 import axiosInstance from "../utils/axiosInstance";
 
-export const getFeedbacks = async (token: string, skip = 0, limit = 10) => {
-  const response = await axiosInstance.get(
-    `/feedback?skip=${skip}&limit=${limit}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+export const getFeedbacks = async ({
+  token,
+  skip,
+  limit,
+  search,
+}: {
+  token: string;
+  skip: number;
+  limit: number;
+  search?: string | null;
+}) => {
+  const url = search
+    ? `/feedback/?skip=${skip}&limit=${limit}&search=${encodeURIComponent(search)}`
+    : `/feedback/?skip=${skip}&limit=${limit}`;
+
+  const response = await axiosInstance.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
-  );
+  });
 
   return response.data.data;
 };

@@ -1,15 +1,26 @@
 import type { IUpdateProgram } from "../types/program";
 import axiosInstance from "../utils/axiosInstance";
 
-export const getPrograms = async (token: string, skip = 0, limit = 10) => {
-  const response = await axiosInstance.get(
-    `/opportunity?skip=${skip}&limit=${limit}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+export const getPrograms = async ({
+  token,
+  skip,
+  limit,
+  search,
+}: {
+  token: string;
+  skip: number;
+  limit: number;
+  search?: string | null;
+}) => {
+  const url = search
+    ? `/opportunity/?skip=${skip}&limit=${limit}&search=${encodeURIComponent(search)}`
+    : `/opportunity/?skip=${skip}&limit=${limit}`;
+
+  const response = await axiosInstance.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
-  );
+  });
 
   return response.data.data;
 };

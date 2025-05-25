@@ -15,6 +15,7 @@ const DashboardProgram = () => {
   const [loading, setLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ProgramItem | null>(null);
   const [selectedProgramId, setSelectedProgramId] = useState("");
+  const [search, setSearch] = useState("");
 
   const openEditModal = (item: ProgramItem) => {
     setSelectedItem(item);
@@ -51,17 +52,18 @@ const DashboardProgram = () => {
   const fetchPrograms = useCallback(async () => {
     if (!accessToken) return;
     try {
-      const data = await getPrograms(
-        accessToken,
-        pagination.skip,
-        pagination.limit,
-      );
+      const data = await getPrograms({
+        limit: pagination.limit,
+        skip: pagination.skip,
+        token: accessToken,
+        search: search === "" ? undefined : search,
+      });
       setPrograms(data.data);
       setPagination(data.meta);
     } catch (error) {
       console.error("Failed to fetch programs:", error);
     }
-  }, [accessToken, pagination.limit, pagination.skip]);
+  }, [accessToken, pagination.limit, pagination.skip, search]);
 
   const onDeleteProgram = async () => {
     setLoading(false);
@@ -87,7 +89,16 @@ const DashboardProgram = () => {
       <h2 className="text-2xl font-semibold">Dashboard Program</h2>
 
       <div className="flex max-w-fit flex-col gap-y-3 overflow-x-hidden sm:max-w-full sm:flex-row sm:justify-between sm:gap-y-0">
-        <SearchField />
+        <SearchField
+          value={search}
+          onChange={(e) => {
+            if (e && "target" in e) {
+              setSearch((e.target as HTMLInputElement).value);
+            }
+          }}
+          onSearch={fetchPrograms}
+          isLoading={loading}
+        />
 
         <ProgramModal refetchPrograms={fetchPrograms} />
       </div>

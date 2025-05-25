@@ -1,16 +1,27 @@
 import type { IUpdateUser } from "../types/user";
 import axiosInstance from "../utils/axiosInstance";
 
-export const getUsers = async (token: string, skip = 0, limit = 10) => {
+export const getUsers = async ({
+  token,
+  skip,
+  limit,
+  search,
+}: {
+  token: string;
+  skip: number;
+  limit: number;
+  search?: string | null;
+}) => {
   try {
-    const response = await axiosInstance.get(
-      `/user/?skip=${skip}&limit=${limit}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    const url = search
+      ? `/user/?skip=${skip}&limit=${limit}&search=${encodeURIComponent(search)}`
+      : `/user/?skip=${skip}&limit=${limit}`;
+
+    const response = await axiosInstance.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
-    );
+    });
 
     return response.data.data;
   } catch (error) {

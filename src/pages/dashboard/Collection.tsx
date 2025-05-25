@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import type { CollectionItem } from "../../types/collection";
 import UpdateCollectionModal from "../../components/modal/UpdateCollectionModal";
-import SearchField from "../../components/Input/SearchField";
 import { getCollections } from "../../services/collectionService";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -40,12 +39,6 @@ const DashboardCollection = () => {
   return (
     <div className="flex w-full flex-col gap-y-3">
       <h2 className="text-2xl font-semibold">Dashboard Jenis Dokumen</h2>
-
-      <div className="flex max-w-fit flex-col gap-y-3 overflow-x-hidden sm:max-w-full sm:flex-row sm:justify-between sm:gap-y-0">
-        <SearchField />
-
-        {/* <UserModal /> */}
-      </div>
 
       {selectedCollection && showEditModal && (
         <UpdateCollectionModal

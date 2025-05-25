@@ -15,6 +15,7 @@ const DashboardUser = () => {
   const [loading, setLoading] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
   const [selectedUserId, setSelectedUserId] = useState("");
+  const [search, setSearch] = useState("");
 
   const openDeleteModal = () => {
     setShowDeleteModal(!showDeleteModal);
@@ -45,13 +46,18 @@ const DashboardUser = () => {
   const getUsers = useCallback(async () => {
     if (!accessToken) return;
     try {
-      const data = await fetchUsers(accessToken);
+      const data = await fetchUsers({
+        limit: pagination.limit,
+        skip: pagination.skip,
+        token: accessToken,
+        search: search === "" ? undefined : search,
+      });
       setUsers(data.data);
       setPagination(data.meta);
     } catch (error) {
       console.error("Failed to fetch users:", error);
     }
-  }, [accessToken]);
+  }, [accessToken, pagination.limit, pagination.skip, search]);
 
   const onDeleteUser = async () => {
     setLoading(true);
@@ -77,7 +83,16 @@ const DashboardUser = () => {
       <h2 className="text-2xl font-semibold">Dashboard Pengguna</h2>
 
       <div className="flex max-w-fit flex-col gap-y-3 overflow-x-hidden sm:max-w-full sm:flex-row sm:justify-between sm:gap-y-0">
-        <SearchField />
+        <SearchField
+          value={search}
+          onChange={(e) => {
+            if (e && "target" in e) {
+              setSearch((e.target as HTMLInputElement).value);
+            }
+          }}
+          onSearch={getUsers}
+          isLoading={loading}
+        />
 
         <UserModal refetchUsers={getUsers} />
       </div>

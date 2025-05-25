@@ -88,7 +88,7 @@ const DashboardHistory = () => {
       <h2 className="text-2xl font-semibold">Riwayat</h2>
 
       <div className="flex max-w-fit flex-col gap-y-3 overflow-x-hidden sm:max-w-full sm:flex-row sm:justify-between sm:gap-y-0">
-        <SearchField />
+        {/* <SearchField /> */}
       </div>
 
       <DeleteModal

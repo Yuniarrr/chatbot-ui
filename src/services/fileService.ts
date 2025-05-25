@@ -1,15 +1,26 @@
 import type { IUpdateFile } from "../types/file";
 import axiosInstance from "../utils/axiosInstance";
 
-export const getFiles = async (token: string, skip = 0, limit = 10) => {
-  const response = await axiosInstance.get(
-    `/file/?skip=${skip}&limit=${limit}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+export const getFiles = async ({
+  token,
+  skip,
+  limit,
+  search,
+}: {
+  token: string;
+  skip: number;
+  limit: number;
+  search?: string | null;
+}) => {
+  const url = search
+    ? `/file/?skip=${skip}&limit=${limit}&search=${encodeURIComponent(search)}`
+    : `/file/?skip=${skip}&limit=${limit}`;
+
+  const response = await axiosInstance.get(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
-  );
+  });
 
   return response.data.data;
 };

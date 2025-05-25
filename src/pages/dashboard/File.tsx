@@ -15,6 +15,7 @@ const DashboardFile = () => {
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
   const [selectedFileId, setSelectedFileId] = useState("");
+  const [search, setSearch] = useState("");
 
   const openEditModal = (file: FileItem) => {
     setSelectedFile(file);
@@ -45,17 +46,18 @@ const DashboardFile = () => {
   const getFiles = useCallback(async () => {
     if (!accessToken) return;
     try {
-      const data = await fetchFiles(
-        accessToken,
-        pagination.skip,
-        pagination.limit,
-      );
+      const data = await fetchFiles({
+        limit: pagination.limit,
+        skip: pagination.skip,
+        token: accessToken,
+        search: search === "" ? undefined : search,
+      });
       setFiles(data.data);
       setPagination(data.meta);
     } catch (error) {
       console.error("Failed to fetch files:", error);
     }
-  }, [accessToken, pagination.limit, pagination.skip]);
+  }, [accessToken, pagination.limit, pagination.skip, search]);
 
   const onDeleteFile = async () => {
     setLoading(true);
@@ -99,7 +101,16 @@ const DashboardFile = () => {
       <h2 className="text-2xl font-semibold">Dashboard File</h2>
 
       <div className="flex max-w-fit flex-col gap-y-3 overflow-x-hidden sm:max-w-full sm:flex-row sm:justify-between sm:gap-y-0">
-        <SearchField />
+        <SearchField
+          value={search}
+          onChange={(e) => {
+            if (e && "target" in e) {
+              setSearch((e.target as HTMLInputElement).value);
+            }
+          }}
+          onSearch={getFiles}
+          isLoading={loading}
+        />
 
         <FileModal refetchFiles={getFiles} />
       </div>

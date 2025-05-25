@@ -12,6 +12,7 @@ const DashboardFeedback = () => {
   const [loading, setLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState<FeedbackItem | null>(null);
   const [selectedFeedbackId, setSelectedFeedbackId] = useState("");
+  const [search, setSearch] = useState("");
 
   const openDeleteModal = (item: FeedbackItem) => {
     setSelectedItem(item);
@@ -38,17 +39,18 @@ const DashboardFeedback = () => {
   const fetchFeedbacks = useCallback(async () => {
     if (!accessToken) return;
     try {
-      const data = await getFeedbacks(
-        accessToken,
-        pagination.skip,
-        pagination.limit,
-      );
+      const data = await getFeedbacks({
+        limit: pagination.limit,
+        skip: pagination.skip,
+        token: accessToken,
+        search: search === "" ? undefined : search,
+      });
       setFeedbacks(data.data);
       setPagination(data.meta);
     } catch (error) {
       console.error("Failed to fetch programs:", error);
     }
-  }, [accessToken, pagination.limit, pagination.skip]);
+  }, [accessToken, pagination.limit, pagination.skip, search]);
 
   const onDeleteFeedback = async () => {
     setLoading(false);
@@ -74,7 +76,16 @@ const DashboardFeedback = () => {
       <h2 className="text-2xl font-semibold">Dashboard Umpan Balik</h2>
 
       <div className="flex max-w-fit flex-col gap-y-3 overflow-x-hidden sm:max-w-full sm:flex-row sm:justify-between sm:gap-y-0">
-        <SearchField />
+        <SearchField
+          value={search}
+          onChange={(e) => {
+            if (e && "target" in e) {
+              setSearch((e.target as HTMLInputElement).value);
+            }
+          }}
+          onSearch={fetchFeedbacks}
+          isLoading={loading}
+        />
       </div>
 
       {selectedItem && showDeleteModal && (
