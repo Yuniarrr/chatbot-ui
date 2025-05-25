@@ -94,6 +94,7 @@ const DashboardUser = () => {
           showModal={showEditModal}
           user={selectedUser}
           onClick={closeEditModal}
+          refetchUsers={getUsers}
         />
       )}
 

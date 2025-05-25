@@ -10,3 +10,11 @@ export interface UserItem {
   created_at?: Date | null;
   updated_at?: Date | null;
 }
+
+interface IUpdateUser {
+  full_name?: string;
+  email?: string;
+  phone_number?: string | null;
+  role?: string;
+  password?: string | null;
+}
