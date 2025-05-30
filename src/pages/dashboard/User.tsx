@@ -80,7 +80,10 @@ const DashboardUser = () => {
 
   return (
     <div className="flex flex-col gap-y-3">
-      <h2 className="text-2xl font-semibold">Dashboard Pengguna</h2>
+      <div className="flex flex-col gap-y-2">
+        <h2 className="text-2xl font-semibold">Dashboard Pengguna</h2>
+        <h2 className="text-sm">Mengelola daftar pengguna</h2>
+      </div>
 
       <div className="flex max-w-fit flex-col gap-y-3 overflow-x-hidden sm:max-w-full sm:flex-row sm:justify-between sm:gap-y-0">
         <SearchField

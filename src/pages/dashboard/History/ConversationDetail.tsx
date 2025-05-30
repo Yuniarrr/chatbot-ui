@@ -74,7 +74,12 @@ const ConversationDetail = () => {
 
             <span className="sr-only">Search</span>
           </button>
-          <h2 className="text-2xl font-semibold">Riwayat: {id}</h2>
+          <div className="flex flex-col gap-y-2">
+            <h2 className="text-2xl font-semibold">Riwayat: {id}</h2>
+            <h2 className="text-sm">
+              Menampilkan detail riwayat percakapan pengguna
+            </h2>
+          </div>
         </div>
         <Pagination
           pagination={pagination}

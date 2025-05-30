@@ -38,7 +38,12 @@ const DashboardCollection = () => {
 
   return (
     <div className="flex w-full flex-col gap-y-3">
-      <h2 className="text-2xl font-semibold">Dashboard Jenis Dokumen</h2>
+      <div className="flex flex-col gap-y-2">
+        <h2 className="text-2xl font-semibold">Dashboard Jenis Dokumen</h2>
+        <h2 className="text-sm">
+          Mengelola jenis file yang digunakan chatbot berdasarkan kategori
+        </h2>
+      </div>
 
       {selectedCollection && showEditModal && (
         <UpdateCollectionModal
@@ -67,6 +72,9 @@ const DashboardCollection = () => {
                   Koleksi
                 </th>
                 <th scope="col" className="px-6 py-3">
+                  Deskripsi
+                </th>
+                <th scope="col" className="px-6 py-3">
                   <span>Status</span>
                 </th>
                 <th scope="col" className="px-6 py-3">
@@ -87,6 +95,7 @@ const DashboardCollection = () => {
                     {index + 1}
                   </th>
                   <td className="px-6 py-4">{item.name}</td>
+                  <td className="px-6 py-4">{item.description}</td>
                   <td className="px-6 py-4">
                     {item.is_active ? "AKTIF" : "NON-AKTIF"}
                   </td>

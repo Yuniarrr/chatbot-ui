@@ -53,7 +53,7 @@ const DashboardFeedback = () => {
   }, [accessToken, pagination.limit, pagination.skip, search]);
 
   const onDeleteFeedback = async () => {
-    setLoading(false);
+    setLoading(true);
     if (!accessToken) return;
     if (selectedFeedbackId === "") return;
     try {
@@ -62,7 +62,7 @@ const DashboardFeedback = () => {
     } catch (error) {
       console.error("Failed to delete program:", error);
     }
-    setLoading(true);
+    setLoading(false);
     setShowDeleteModal(false);
     setSelectedFeedbackId("");
   };
@@ -73,7 +73,12 @@ const DashboardFeedback = () => {
 
   return (
     <div className="flex w-full flex-col gap-y-3">
-      <h2 className="text-2xl font-semibold">Dashboard Umpan Balik</h2>
+      <div className="flex flex-col gap-y-2">
+        <h2 className="text-2xl font-semibold">Dashboard Umpan Balik</h2>
+        <h2 className="text-sm">
+          Menampilkan seluruh kritik dan saran dari pengguna chatbot
+        </h2>
+      </div>
 
       <div className="flex max-w-fit flex-col gap-y-3 overflow-x-hidden sm:max-w-full sm:flex-row sm:justify-between sm:gap-y-0">
         <SearchField

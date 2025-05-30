@@ -66,7 +66,7 @@ const DashboardProgram = () => {
   }, [accessToken, pagination.limit, pagination.skip, search]);
 
   const onDeleteProgram = async () => {
-    setLoading(false);
+    setLoading(true);
     if (!accessToken) return;
     if (selectedProgramId === "") return;
     try {
@@ -75,7 +75,7 @@ const DashboardProgram = () => {
     } catch (error) {
       console.error("Failed to delete program:", error);
     }
-    setLoading(true);
+    setLoading(false);
     setShowDeleteModal(false);
     setSelectedProgramId("");
   };
@@ -86,7 +86,13 @@ const DashboardProgram = () => {
 
   return (
     <div className="flex w-full flex-col gap-y-3">
-      <h2 className="text-2xl font-semibold">Dashboard Program</h2>
+      <div className="flex flex-col gap-y-2">
+        <h2 className="text-2xl font-semibold">Dashboard Program</h2>
+        <h2 className="text-sm">
+          Mengelola program, seperti seminar, magang, beasiswa, lomba dan
+          sertifikasi
+        </h2>
+      </div>
 
       <div className="flex max-w-fit flex-col gap-y-3 overflow-x-hidden sm:max-w-full sm:flex-row sm:justify-between sm:gap-y-0">
         <SearchField
