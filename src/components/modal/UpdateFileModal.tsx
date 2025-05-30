@@ -9,6 +9,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import type { CollectionItem } from "../../types/collection";
 import { getCollections } from "../../services/collectionService";
 import { updateFile } from "../../services/fileService";
+import Markdown from "react-markdown";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
@@ -28,6 +29,7 @@ const UpdateFileModal: React.FC<UpdateFileModalProps> = ({
   const { accessToken } = useAuth();
   const [numPages, setNumPages] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
+  const [contentTxt, setContentTxt] = useState("");
 
   const filePath = `http://localhost:8080/api/v1/dev/uploads/${file.file_name}`;
 
@@ -94,9 +96,18 @@ const UpdateFileModal: React.FC<UpdateFileModalProps> = ({
     onClick();
   };
 
+  const fetchTxt = useCallback(async () => {
+    if (file.meta.name.split(".").pop() === "txt") {
+      const res = await fetch(filePath);
+      const text = await res.text();
+      setContentTxt(text);
+    }
+  }, [file.meta.name, filePath]);
+
   useEffect(() => {
     fetchCollection();
-  }, [fetchCollection]);
+    fetchTxt();
+  }, [fetchCollection, fetchTxt]);
 
   return (
     <div
@@ -226,21 +237,43 @@ const UpdateFileModal: React.FC<UpdateFileModalProps> = ({
               </button>
             </div>
             <div className="mx-auto hidden max-h-[80vh] w-1/2 overflow-y-auto rounded-lg border-2 border-gray-300 bg-gray-50 p-4 sm:block">
-              <Document
-                file={filePath}
-                onLoadSuccess={onDocumentLoadSuccess}
-                className="flex flex-col items-center"
-              >
-                {Array.from(new Array(numPages), (_, index) => (
-                  <Page
-                    key={`page_${index + 1}`}
-                    pageNumber={index + 1}
-                    renderTextLayer={false}
-                    renderAnnotationLayer={false}
-                    className="my-4 shadow-md"
-                  />
-                ))}
-              </Document>
+              {file.meta.name.split(".").pop() == "pdf" && (
+                <Document
+                  file={filePath}
+                  onLoadSuccess={onDocumentLoadSuccess}
+                  className="flex flex-col items-center"
+                >
+                  {Array.from(new Array(numPages), (_, index) => (
+                    <Page
+                      key={`page_${index + 1}`}
+                      pageNumber={index + 1}
+                      renderTextLayer={false}
+                      renderAnnotationLayer={false}
+                      className="my-4 shadow-md"
+                    />
+                  ))}
+                </Document>
+              )}
+              {file.meta.name.split(".").pop() == "txt" && (
+                <Markdown>{contentTxt}</Markdown>
+              )}
+              {file.meta.name.includes("its.ac.id") && (
+                <p>
+                  Akses url berikut{" "}
+                  <a
+                    className="text-blue-400 underline"
+                    target="_blank"
+                    href={`${file.file_name}`}
+                  >
+                    {file.file_name}
+                  </a>
+                </p>
+              )}
+              {!file.meta.name.includes("its.ac.id") &&
+                file.meta.name.split(".").pop() !== "pdf" &&
+                file.meta.name.split(".").pop() !== "txt" && (
+                  <p>Pratinjau tidak tersedia untuk format file ini.</p>
+                )}
             </div>
           </div>
         </div>

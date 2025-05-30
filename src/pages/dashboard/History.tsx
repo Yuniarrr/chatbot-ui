@@ -3,7 +3,6 @@ import DeleteModal from "../../components/modal/DeleteModal";
 import type { ListUniqueConversationItem } from "../../types/conversation";
 import InfoConversationModal from "../../components/modal/InfoConversationModal";
 import Pagination from "../../components/pagination/Pagination";
-import SearchField from "../../components/Input/SearchField";
 import { useAuth } from "../../contexts/AuthContext";
 import {
   getSenderConversation,
