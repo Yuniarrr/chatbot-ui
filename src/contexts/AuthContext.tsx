@@ -85,7 +85,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       localStorage.setItem("refreshToken", refresh_token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      navigate("/dashboard");
+      if (user.role == "ADMINISTRATOR") {
+        navigate("/dashboard");
+      } else if (user.role == "USER") {
+        navigate("/dashboard/program");
+      } else {
+        navigate("/login");
+      }
     } catch (error: unknown) {
       if (isAxiosError(error) && error.response) {
         console.error("Login error:", error.response.data?.message);
