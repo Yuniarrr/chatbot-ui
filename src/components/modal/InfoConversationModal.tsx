@@ -100,15 +100,15 @@ const InfoConversationModal: React.FC<InfoConversationModalProps> = ({
         onConfirm={onDeleteConversation}
       />
 
-      <div className="relative h-screen w-full max-w-4/5 shadow dark:bg-gray-700">
-        <div className="relative h-full rounded-l-lg bg-white shadow-sm dark:bg-gray-700">
-          <div className="flex items-center justify-between rounded-t border-b border-gray-200 p-4 md:p-5 dark:border-gray-600">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+      <div className="relative h-screen w-full max-w-4/5 shadow">
+        <div className="relative h-full rounded-l-lg bg-white shadow-sm">
+          <div className="flex items-center justify-between rounded-t border-b border-gray-200 p-4 md:p-5">
+            <h3 className="text-xl font-semibold text-gray-900">
               Daftar Percakapan
             </h3>
             <button
               type="button"
-              className="end-2.5 ms-auto inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+              className="end-2.5 ms-auto inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900"
               data-modal-hide="dashboardModal"
               onClick={onClick}
             >
@@ -132,8 +132,8 @@ const InfoConversationModal: React.FC<InfoConversationModalProps> = ({
           </div>
 
           <div className="mb-5 p-5 shadow-md sm:rounded-lg">
-            <table className="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-              <thead className="bg-gray-100 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
+            <table className="w-full text-left text-sm text-gray-500 rtl:text-right">
+              <thead className="bg-gray-100 text-xs text-gray-700 uppercase">
                 <tr>
                   <th scope="col" className="px-4 py-3 sm:px-6">
                     No.
@@ -151,10 +151,10 @@ const InfoConversationModal: React.FC<InfoConversationModalProps> = ({
               </thead>
               <tbody>
                 {conversations.map((item, index) => (
-                  <tr className="border-b border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
+                  <tr className="border-b border-gray-200 bg-white hover:bg-gray-50">
                     <th
                       scope="row"
-                      className="px-4 py-4 font-medium whitespace-nowrap text-gray-900 sm:px-6 dark:text-white"
+                      className="px-4 py-4 font-medium whitespace-nowrap text-gray-900 sm:px-6"
                     >
                       {index + 1 + pagination.skip}
                     </th>

@@ -5,7 +5,6 @@ import PrivateRoute from "../routes/PrivateRoute";
 import DashboardLayout from "./DashboardLayout";
 import DashboardUser from "./dashboard/User";
 import DashboardFile from "./dashboard/File";
-import DashboardTool from "./dashboard/Tool";
 import DashboardHistory from "./dashboard/History";
 import DashboardCollection from "./dashboard/Collection";
 import DashboardProgram from "./dashboard/Program";
@@ -26,7 +25,6 @@ function AppRoutes() {
             <>
               <Route index element={<DashboardUser />} />
               <Route path="file" element={<DashboardFile />} />
-              <Route path="tool" element={<DashboardTool />} />
               <Route path="history" element={<DashboardHistory />} />
               <Route path="koleksi" element={<DashboardCollection />} />
               <Route path="program" element={<DashboardProgram />} />

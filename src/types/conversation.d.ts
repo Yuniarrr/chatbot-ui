@@ -18,4 +18,5 @@ export interface MessageItem {
   message: string;
   created_at: string;
   from_message: string;
+  file_url?: string | null;
 }

@@ -11,25 +11,33 @@ export const getFeedbacks = async ({
   limit: number;
   search?: string | null;
 }) => {
-  const url = search
-    ? `/feedback/?skip=${skip}&limit=${limit}&search=${encodeURIComponent(search)}`
-    : `/feedback/?skip=${skip}&limit=${limit}`;
+  try {
+    const url = search
+      ? `/feedback/?skip=${skip}&limit=${limit}&search=${encodeURIComponent(search)}`
+      : `/feedback/?skip=${skip}&limit=${limit}`;
 
-  const response = await axiosInstance.get(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+    const response = await axiosInstance.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  return response.data.data;
+    return response.data.data;
+  } catch (error) {
+    return error;
+  }
 };
 
 export const deleteFeedback = async (token: string, feedbackId: string) => {
-  const response = await axiosInstance.delete(`/feedback/${feedbackId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  try {
+    const response = await axiosInstance.delete(`/feedback/${feedbackId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  return response.data;
+    return response.data;
+  } catch (error) {
+    return error;
+  }
 };

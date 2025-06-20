@@ -88,15 +88,15 @@ const UserModal: React.FC<UserModalProps> = ({ refetchUsers }) => {
           onClick={modalUploadFile}
         />
 
-        <div className="relative w-full max-w-md rounded-lg p-4 shadow dark:bg-gray-700">
-          <div className="relative rounded-lg bg-white shadow-sm dark:bg-gray-700">
-            <div className="flex items-center justify-between rounded-t border-b border-gray-200 p-4 md:p-5 dark:border-gray-600">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+        <div className="relative w-full max-w-md rounded-lg p-4 shadow">
+          <div className="relative rounded-lg bg-white shadow-sm">
+            <div className="flex items-center justify-between rounded-t border-b border-gray-200 p-4 md:p-5">
+              <h3 className="text-xl font-semibold text-gray-900">
                 Tambah Pengguna Baru
               </h3>
               <button
                 type="button"
-                className="end-2.5 ms-auto inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+                className="end-2.5 ms-auto inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900"
                 data-modal-hide="dashboardModal"
                 onClick={modalUploadFile}
               >
@@ -188,13 +188,13 @@ const UserModal: React.FC<UserModalProps> = ({ refetchUsers }) => {
               </form>
               <button
                 type="submit"
-                className={`mt-4 w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ${loading ? "cursor-not-allowed" : "cursor-pointer"}`}
+                className={`mt-4 w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none ${loading ? "cursor-not-allowed" : "cursor-pointer"}`}
                 onClick={async () => await fetchNewUser()}
               >
                 {loading ? (
                   <svg
                     aria-hidden="true"
-                    className="mx-auto h-5 w-5 animate-spin fill-blue-600 text-gray-200 dark:text-gray-600"
+                    className="mx-auto h-5 w-5 animate-spin fill-blue-600 text-gray-200"
                     viewBox="0 0 100 101"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import ErrorModal from "../components/modal/ErrorModal";
 
 const Login = () => {
   const { login } = useAuth();
@@ -8,13 +9,30 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleSubmitEvent = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage(null);
+
     if (input.email !== "" && input.password !== "") {
-      return await login(input.email, input.password);
+      const response = await login(input.email, input.password);
+      if (response?.status !== 200 && response?.status !== 201) {
+        setErrorMessage(response?.response?.data?.detail);
+      }
+
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 3000);
+
+      return;
     }
-    alert("please provide a valid input");
+    // alert("please provide a valid input");
+    setTimeout(() => {
+      setErrorMessage(null);
+    }, 3000);
+
+    setErrorMessage("Masukkan email dan password");
   };
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +54,7 @@ const Login = () => {
             <div>
               <label
                 htmlFor="Email"
-                className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                className="mb-2 block text-sm font-medium text-gray-900"
               >
                 Email
               </label>
@@ -44,7 +62,7 @@ const Login = () => {
                 type="email"
                 id="email"
                 name="email"
-                className="block w-full rounded-lg border border-gray-300 bg-gray-100 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                className="block w-full rounded-lg border border-gray-300 bg-gray-100 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
                 placeholder="abc@gmail.com"
                 required
                 onChange={handleInput}
@@ -53,7 +71,7 @@ const Login = () => {
             <div>
               <label
                 htmlFor="Password"
-                className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                className="mb-2 block text-sm font-medium text-gray-900"
               >
                 Password
               </label>
@@ -61,17 +79,17 @@ const Login = () => {
                 type="password"
                 id="password"
                 name="password"
-                className="block w-full rounded-lg border border-gray-300 bg-gray-100 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                className="block w-full rounded-lg border border-gray-300 bg-gray-100 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
                 placeholder="password"
                 required
                 onChange={handleInput}
               />
             </div>
-            <p className="text-right text-sm text-gray-400">Forgot password?</p>
+            {/* <p className="text-right text-sm text-gray-400">Forgot password?</p> */}
             <div className="relative flex w-full flex-row justify-end">
               <button
                 onClick={handleSubmitEvent}
-                className="me-2 mb-2 cursor-pointer rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                className="me-2 mb-2 cursor-pointer rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none"
               >
                 Login
               </button>
@@ -86,6 +104,8 @@ const Login = () => {
           Teknologi Informasi
         </p>
       </div>
+
+      <ErrorModal errorMessage={errorMessage} />
     </div>
   );
 };

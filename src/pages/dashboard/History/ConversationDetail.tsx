@@ -7,6 +7,7 @@ import { getMessages } from "../../../services/conversationService";
 import Markdown from "react-markdown";
 import type { IPagination } from "../../../types/pagination";
 import Pagination from "../../../components/pagination/Pagination";
+import getTimeDiff from "../../../utils/getTimeDiff";
 
 const ConversationDetail = () => {
   const { id } = useParams();
@@ -55,7 +56,7 @@ const ConversationDetail = () => {
           <button
             type="submit"
             onClick={onBack}
-            className="ms-2 cursor-pointer rounded-lg border border-blue-700 bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            className="ms-2 cursor-pointer rounded-lg border border-blue-700 bg-blue-700 p-2 text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -112,16 +113,22 @@ const ConversationDetail = () => {
                       src="https://png.pngtree.com/png-clipart/20241231/original/pngtree-cute-profile-picture-girl-png-image_18421685.png"
                       alt="Jese image"
                     />
-                    <div className="flex w-fit flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4 leading-1.5 dark:bg-gray-700">
+                    <div className="flex w-fit flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4 leading-1.5">
                       <div className="flex items-center space-x-2 rtl:space-x-reverse">
-                        <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                        <span className="text-sm font-semibold text-gray-900">
                           {item.from_message === "BOT" ? "CATI" : "USER"}
                         </span>
-                        <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                          {formatTime(item.created_at)}
+                        <span className="text-sm font-normal text-gray-500">
+                          {
+                            getTimeDiff(
+                              items[index + 1]?.created_at,
+                              item.created_at,
+                            )?.menitDetik
+                          }{" "}
+                          - {formatTime(item.created_at)}
                         </span>
                       </div>
-                      <p className="py-2.5 text-sm font-normal break-all text-gray-900 dark:text-white">
+                      <p className="py-2.5 text-sm font-normal break-all text-gray-900">
                         <Markdown>{item.message}</Markdown>
                       </p>
                     </div>
@@ -133,17 +140,21 @@ const ConversationDetail = () => {
                     className="flex w-full items-start justify-end gap-2.5"
                     id={index.toString()}
                   >
-                    <div className="flex w-fit flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4 leading-1.5 dark:bg-gray-700">
+                    <div className="flex w-fit flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4 leading-1.5">
                       <div className="flex items-center space-x-2 rtl:space-x-reverse">
-                        <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                        <span className="text-sm font-semibold text-gray-900">
                           {item.from_message === "USER" ? "USER" : "CATI"}
                         </span>
-                        <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                        <span className="text-sm font-normal text-gray-500">
                           {formatTime(item.created_at)}
                         </span>
                       </div>
-                      <p className="block w-full py-2.5 text-sm font-normal break-all text-gray-900 dark:text-white">
-                        <Markdown>{item.message}</Markdown>
+                      <p className="block w-full py-2.5 text-sm font-normal break-all text-gray-900">
+                        <Markdown>
+                          {(item.file_url
+                            ? `![Gambar_${index}](${item.file_url})`
+                            : "") + item.message}
+                        </Markdown>
                       </p>
                     </div>
                     <img

@@ -46,36 +46,44 @@ export const addNewProgram = async ({
   link: string;
   image_url: string;
 }) => {
-  const response = await axiosInstance.post(
-    `/opportunity/`,
-    {
-      title,
-      description,
-      organizer,
-      type,
-      start_date,
-      end_date,
-      link,
-      image_url,
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
+  try {
+    const response = await axiosInstance.post(
+      `/opportunity/`,
+      {
+        title,
+        description,
+        organizer,
+        type,
+        start_date,
+        end_date,
+        link,
+        image_url,
       },
-    },
-  );
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
 
-  return response.data.data;
+    return response.data.data;
+  } catch (error) {
+    return error;
+  }
 };
 
 export const deleteProgram = async (token: string, programId: string) => {
-  const response = await axiosInstance.delete(`/opportunity/${programId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  try {
+    const response = await axiosInstance.delete(`/opportunity/${programId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  return response.data;
+    return response.data;
+  } catch (error) {
+    return error;
+  }
 };
 
 export const updateProgram = async ({

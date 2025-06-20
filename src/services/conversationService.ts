@@ -5,16 +5,20 @@ export const getSenderConversation = async (
   skip = 0,
   limit = 10,
 ) => {
-  const response = await axiosInstance.get(
-    `/conversation?skip=${skip}&limit=${limit}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
+  try {
+    const response = await axiosInstance.get(
+      `/conversation?skip=${skip}&limit=${limit}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
-    },
-  );
+    );
 
-  return response.data.data;
+    return response.data.data;
+  } catch (error) {
+    return error;
+  }
 };
 
 export const getConversations = async (
@@ -23,16 +27,20 @@ export const getConversations = async (
   skip = 0,
   limit = 10,
 ) => {
-  const response = await axiosInstance.get(
-    `/conversation/${param}?skip=${skip}&limit=${limit}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
+  try {
+    const response = await axiosInstance.get(
+      `/conversation/${param}?skip=${skip}&limit=${limit}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
-    },
-  );
+    );
 
-  return response.data.data;
+    return response.data.data;
+  } catch (error) {
+    return error;
+  }
 };
 
 export const getMessages = async (
@@ -41,16 +49,20 @@ export const getMessages = async (
   skip = 0,
   limit = 10,
 ) => {
-  const response = await axiosInstance.get(
-    `/conversation/message/${conversationId}?skip=${skip}&limit=${limit}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
+  try {
+    const response = await axiosInstance.get(
+      `/conversation/message/${conversationId}?skip=${skip}&limit=${limit}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
-    },
-  );
+    );
 
-  return response.data.data;
+    return response.data.data;
+  } catch (error) {
+    return error;
+  }
 };
 
 export const deleteConversationById = async (

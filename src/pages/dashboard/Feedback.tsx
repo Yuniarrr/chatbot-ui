@@ -110,8 +110,8 @@ const DashboardFeedback = () => {
 
       {feedbacks.length !== 0 && (
         <div className="relative max-w-fit overflow-x-auto shadow-md sm:max-w-full sm:rounded-lg">
-          <table className="w-full min-w-[600px] text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-            <thead className="bg-gray-100 text-xs text-gray-700 uppercase dark:bg-gray-700 dark:text-gray-400">
+          <table className="w-full min-w-[600px] text-left text-sm text-gray-500 rtl:text-right">
+            <thead className="bg-gray-100 text-xs text-gray-700 uppercase">
               <tr>
                 <th scope="col" className="px-6 py-3">
                   No.
@@ -132,10 +132,10 @@ const DashboardFeedback = () => {
             </thead>
             <tbody>
               {feedbacks.map((item, index) => (
-                <tr className="border-b border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
+                <tr className="border-b border-gray-200 bg-white hover:bg-gray-50">
                   <th
                     scope="row"
-                    className="px-6 py-4 font-medium whitespace-nowrap text-gray-900 dark:text-white"
+                    className="px-6 py-4 font-medium whitespace-nowrap text-gray-900"
                   >
                     {index + 1 + pagination.skip}
                   </th>

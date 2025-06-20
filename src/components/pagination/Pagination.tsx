@@ -24,25 +24,18 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <div className="flex flex-col items-center">
-      <span className="text-sm text-gray-700 dark:text-gray-400">
+      <span className="text-sm text-gray-700">
         Showing{" "}
-        <span className="font-semibold text-gray-900 dark:text-white">
-          {pagination.start}
-        </span>{" "}
-        to{" "}
-        <span className="font-semibold text-gray-900 dark:text-white">
-          {pagination.end}
-        </span>{" "}
+        <span className="font-semibold text-gray-900">{pagination.start}</span>{" "}
+        to <span className="font-semibold text-gray-900">{pagination.end}</span>{" "}
         of{" "}
-        <span className="font-semibold text-gray-900 dark:text-white">
-          {pagination.total}
-        </span>{" "}
+        <span className="font-semibold text-gray-900">{pagination.total}</span>{" "}
         Entries
       </span>
       <div className="xs:mt-0 mt-2 inline-flex">
         <button
           onClick={handlePrev}
-          className={`flex h-8 items-center justify-center rounded-s px-3 text-sm font-medium text-white dark:border-gray-700 dark:bg-gray-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${pagination.is_prev ? "cursor-pointer bg-gray-600 hover:bg-gray-900" : "cursor-not-allowed bg-gray-400"}`}
+          className={`flex h-8 items-center justify-center rounded-s px-3 text-sm font-medium text-white ${pagination.is_prev ? "cursor-pointer bg-gray-600 hover:bg-gray-900" : "cursor-not-allowed bg-gray-400"}`}
         >
           <svg
             className="me-2 h-3.5 w-3.5 rtl:rotate-180"
@@ -63,7 +56,7 @@ const Pagination: React.FC<PaginationProps> = ({
         </button>
         <button
           onClick={handleNext}
-          className={`flex h-8 items-center justify-center rounded-e border-0 border-s border-gray-700 px-3 text-sm font-medium text-white dark:border-gray-700 dark:bg-gray-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${pagination.is_next ? "cursor-pointer bg-gray-600 hover:bg-gray-900" : "cursor-not-allowed bg-gray-400"}`}
+          className={`flex h-8 items-center justify-center rounded-e border-0 border-s border-gray-700 px-3 text-sm font-medium text-white ${pagination.is_next ? "cursor-pointer bg-gray-600 hover:bg-gray-900" : "cursor-not-allowed bg-gray-400"}`}
         >
           Next
           <svg

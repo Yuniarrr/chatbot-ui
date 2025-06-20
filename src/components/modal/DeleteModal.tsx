@@ -30,11 +30,11 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
         />
 
         <div className="relative max-h-full w-full max-w-md p-4">
-          <div className="relative rounded-lg bg-white shadow-sm dark:bg-gray-700">
+          <div className="relative rounded-lg bg-white shadow-sm">
             <button
               onClick={onCancel}
               type="button"
-              className="absolute end-2.5 top-3 ms-auto inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+              className="absolute end-2.5 top-3 ms-auto inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900"
               data-modal-hide="popup-modal"
             >
               <svg
@@ -56,7 +56,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
             </button>
             <div className="p-4 text-center md:p-5">
               <svg
-                className="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200"
+                className="mx-auto mb-4 h-12 w-12 text-gray-400"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -70,19 +70,19 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
                   d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                 />
               </svg>
-              <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+              <h3 className="mb-5 text-lg font-normal text-gray-500">
                 Apakah anda yakin untuk menghapusnya?
               </h3>
               <button
                 onClick={async () => await onConfirm()}
                 data-modal-hide="popup-modal"
                 type="button"
-                className={`inline-flex cursor-pointer items-center rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:ring-4 focus:ring-red-300 focus:outline-none dark:focus:ring-red-800`}
+                className={`inline-flex cursor-pointer items-center rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:ring-4 focus:ring-red-300 focus:outline-none`}
               >
                 {isLoading ? (
                   <svg
                     aria-hidden="true"
-                    className="mx-auto h-5 w-5 animate-spin fill-gray-600 text-gray-200 dark:text-gray-600"
+                    className="mx-auto h-5 w-5 animate-spin fill-gray-600 text-gray-200"
                     viewBox="0 0 100 101"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -104,7 +104,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
                 onClick={onCancel}
                 data-modal-hide="popup-modal"
                 type="button"
-                className="ms-3 cursor-pointer rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                className="ms-3 cursor-pointer rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 focus:outline-none"
               >
                 Tidak, batalkan
               </button>

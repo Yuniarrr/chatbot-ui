@@ -1,13 +1,17 @@
 import axiosInstance from "../utils/axiosInstance";
 
 export const getCollections = async (token: string) => {
-  const response = await axiosInstance.get(`/collection/`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  try {
+    const response = await axiosInstance.get(`/collection/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-  return response.data.data;
+    return response.data.data;
+  } catch (error) {
+    return error;
+  }
 };
 
 export const updateCollection = async ({
